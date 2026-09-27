@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { AnnouncementBar } from "@/components/layout/announcement-bar"
+import { HideOnCheckout } from "@/components/layout/hide-on-checkout"
 import { ConsentBanner } from "@/components/consent/consent-banner"
 import { TrackingScripts } from "@/components/consent/tracking-scripts"
 import { CONSENT_DEFAULTS_SCRIPT } from "@/components/consent/consent-defaults"
@@ -66,7 +67,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Sari la conținut
         </a>
         <Providers>
-          <AnnouncementBar {...content.announcement} />
+          <HideOnCheckout>
+            <AnnouncementBar {...content.announcement} />
+          </HideOnCheckout>
           <Header
             nav={{
               categories: topCategories,
@@ -76,7 +79,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
           <main id="main">{children}</main>
-          <Footer config={config} categories={topCategories} />
+          <HideOnCheckout>
+            <Footer config={config} categories={topCategories} />
+          </HideOnCheckout>
           <ConsentBanner />
           <TrackingScripts config={config.tracking} />
         </Providers>

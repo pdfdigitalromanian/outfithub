@@ -36,7 +36,7 @@ export async function getOrder(id: string) {
     const { order } = await sdk.client.fetch<{ order: HttpTypes.StoreOrder }>(`/store/orders/${id}`, {
       query: {
         fields:
-          "id,display_id,email,customer_id,created_at,status,fulfillment_status,payment_status,currency_code,total,subtotal,item_subtotal,shipping_total,tax_total,discount_total,*items,*shipping_address,*billing_address,*shipping_methods,*fulfillments,*fulfillments.labels,*payment_collections.payments,metadata",
+          "id,display_id,email,customer_id,created_at,status,fulfillment_status,payment_status,currency_code,total,subtotal,item_subtotal,item_total,original_item_total,shipping_total,tax_total,discount_total,*items,*shipping_address,*billing_address,*shipping_methods,*fulfillments,*fulfillments.labels,*payment_collections.payments,metadata",
       },
       headers: await getAuthHeaders(),
       cache: "no-store",

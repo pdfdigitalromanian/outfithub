@@ -45,7 +45,7 @@ export function OrderDetails({ order }: { order: HttpTypes.StoreOrder }) {
           ))}
         </ul>
         <dl className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-sm">
-          <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd className="tabular-nums">{formatMoney(order.item_subtotal, c)}</dd></div>
+          <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd className="tabular-nums">{formatMoney((order as any).original_item_total ?? order.item_total, c)}</dd></div>
           {(order.discount_total ?? 0) > 0 && <div className="flex justify-between"><dt className="text-muted">Reducere</dt><dd className="tabular-nums text-moss">−{formatMoney(order.discount_total, c)}</dd></div>}
           <div className="flex justify-between"><dt className="text-muted">Livrare</dt><dd className="tabular-nums">{order.shipping_total ? formatMoney(order.shipping_total, c) : "Gratuită"}</dd></div>
           <div className="flex justify-between text-base font-medium"><dt>Total</dt><dd className="tabular-nums">{formatMoney(order.total, c)}</dd></div>

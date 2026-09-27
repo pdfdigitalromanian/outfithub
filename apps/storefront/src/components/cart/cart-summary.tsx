@@ -11,7 +11,7 @@ export function Totals({ cart, showShipping = true }: { cart: HttpTypes.StoreCar
   const hasShipping = (cart.shipping_methods?.length ?? 0) > 0
   return (
     <dl className="flex flex-col gap-2.5 text-sm">
-      <Row label="Subtotal" value={formatMoney(cart.item_subtotal ?? cart.item_total, c)} />
+      <Row label="Subtotal" value={formatMoney((cart as any).original_item_total ?? cart.item_total, c)} />
       {(cart.discount_total ?? 0) > 0 && <Row label="Reducere" value={`−${formatMoney(cart.discount_total, c)}`} accent />}
       {showShipping && <Row label="Livrare" value={hasShipping ? (cart.shipping_total ? formatMoney(cart.shipping_total, c) : "Gratuită") : "Calculată la pasul următor"} muted={!hasShipping} />}
       <div className="my-1 border-t border-line" />

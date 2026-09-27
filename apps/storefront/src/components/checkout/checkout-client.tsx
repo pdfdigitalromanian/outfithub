@@ -445,11 +445,12 @@ export function CheckoutClient({
           </StepCard>
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:col-span-5" aria-label="Sumar comandă">
+        <aside className="order-first lg:sticky lg:top-24 lg:order-none lg:col-span-5" aria-label="Sumar comandă">
           <OrderSummary cart={cart} items={items} />
         </aside>
       </div>
 
+      {lockerOpen && (
       <EasyboxSelector
         open={lockerOpen}
         onOpenChange={setLockerOpen}
@@ -462,6 +463,7 @@ export function CheckoutClient({
           if (opt) void chooseOption(opt, l)
         }}
       />
+      )}
     </div>
   )
 }
@@ -474,9 +476,11 @@ function OrderSummary({ cart, items }: { cart: HttpTypes.StoreCart; items: HttpT
       <ul className="flex flex-col gap-4">
         {items.map((i) => (
           <li key={i.id} className="flex items-center gap-3">
-            <span className="product-frame relative h-16 w-13 shrink-0 overflow-hidden rounded-sm" style={{ width: 52 }}>
-              {i.thumbnail && <Image src={i.thumbnail} alt="" fill sizes="52px" className="object-cover" />}
-              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-ink px-1 text-[0.65rem] text-paper">{i.quantity}</span>
+            <span className="relative shrink-0">
+              <span className="product-frame relative block h-16 overflow-hidden rounded-sm" style={{ width: 52 }}>
+                {i.thumbnail && <Image src={i.thumbnail} alt="" fill sizes="52px" className="object-cover" />}
+              </span>
+              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-ink px-1 text-[0.65rem] text-paper" aria-label={`Cantitate ${i.quantity}`}>{i.quantity}</span>
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm">{i.product_title}</span>

@@ -14,6 +14,7 @@ export const CART_FIELDS = [
   "subtotal",
   "item_subtotal",
   "item_total",
+  "original_item_total",
   "shipping_total",
   "shipping_subtotal",
   "tax_total",
