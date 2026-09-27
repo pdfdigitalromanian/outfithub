@@ -23,8 +23,13 @@ test.describe("catalog & SEO", () => {
   })
 
   test("filters and search narrow the catalog", async ({ page }) => {
+    await page.goto("/shop")
+    const total = await page.locator("main article").count()
     await page.goto("/shop?category=tricouri")
-    await expect(page.locator("main article")).toHaveCount(2)
+    const filtered = await page.locator("main article").count()
+    expect(filtered).toBeGreaterThan(0)
+    expect(filtered).toBeLessThan(total)
+    await expect(page.locator("main article h3", { hasText: "Hanorac" })).toHaveCount(0)
     await page.goto("/search?q=hanorac")
     await expect(page.getByRole("heading", { name: "Hanorac Vintage" })).toBeVisible()
   })

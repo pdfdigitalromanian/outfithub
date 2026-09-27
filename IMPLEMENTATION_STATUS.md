@@ -29,7 +29,7 @@
 | Search (instant + results page) | ✅ | E2E |
 | Product page, variant selection, deep links | ✅ | E2E; CLS 0 |
 | Related products, recently viewed | ✅ | Recently viewed requires “Preferences” consent |
-| Wishlist (guest + account sync) | ✅ | E2E (guest); account sync via `/store/customers/me/wishlist` (HTTP test for auth) |
+| Wishlist (guest + account sync) | ✅ | E2E for guest and for merge into the account |
 | Cart drawer + cart page, promo codes | ✅ | E2E; promo codes use Medusa Promotions |
 | Checkout (address → delivery → payment → review) | ✅ | E2E COD order |
 | Sameday home delivery option | ✅ | E2E |
@@ -37,7 +37,7 @@
 | Cash on delivery | ✅ | E2E |
 | Stripe card payments | 🟡 | Payment Element integration implemented; needs Stripe keys (not exercised) |
 | Order confirmation | ✅ | E2E |
-| Customer accounts (register/login/profile/addresses/orders) | ✅ | Flows implemented; login/register verified manually via server actions |
+| Customer accounts (register/login/profile/addresses/orders) | ✅ | E2E: register → wishlist merge → address → logout → failed/successful login |
 | Password reset | 🟡 | Implemented; e-mail delivery needs SendGrid (logs locally) |
 | Responsive navigation, mobile UX, sticky buy bar | ✅ | Visual QA |
 | Empty, loading, error, 404, offline states | ✅ | |
@@ -90,7 +90,7 @@
 | Meta catalog sync (items_batch upsert/delete, batch status check), webhooks | 🟡🟠 | Needs catalog; Shops eligibility depends on Meta |
 | TikTok Pixel + Events API | 🟡 | Needs pixel code + access token |
 | TikTok Shop (OAuth, signed API, product create/edit/delete, images, inventory, prices, webhooks) | 🟠 | Needs approved TikTok Shop seller account in a supported market + partner app |
-| Sameday: auth, services, pickup points, lockers, AWB (home & Easybox, COD), label, tracking, cancel, status job | 🟡🟠 | Verified against a local mock implementing the official PHP SDK request formats; needs Sameday API contract |
+| Sameday: auth, services, pickup points, lockers, AWB (home & Easybox, COD), label, tracking, cancel, status job | 🟡🟠 | Verified end-to-end against `integration-tests/mocks/sameday-mock.mjs` (official PHP SDK formats); needs Sameday API contract |
 | SendGrid e-mails | 🟡 | Needs API key + templates |
 | Stripe | 🟡 | Needs keys + webhook |
 | Storefront cache purge from backend | ✅ | Verified (`/api/revalidate` 200) |
@@ -104,10 +104,10 @@
 | Backend unit tests (26) | ✅ |
 | Backend HTTP integration tests (11) | ✅ |
 | Storefront unit tests (13) | ✅ |
-| Playwright E2E + axe (30, desktop + mobile, production build) | ✅ |
+| Playwright E2E: catalog, SEO endpoints, legal pages, wishlist, COD checkout, account lifecycle, axe a11y, horizontal-overflow at 375–1920 px (desktop + mobile projects) | ✅ |
 | Backend production build (`medusa build`) | ✅ |
 | Storefront production build | ✅ |
-| Security review (secrets, auth, webhooks, validation, bundle scan) | ✅ | see docs/ARCHITECTURE.md & SECURITY notes in README |
+| Security review (secrets, auth, webhooks, validation, bundle scan) — see docs/SECURITY.md | ✅ |
 
 ## Not implemented / known gaps
 
