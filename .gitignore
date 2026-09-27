@@ -1,0 +1,25 @@
+node_modules/
+.env
+.env.*
+!.env.example
+!.env.template
+!**/.env.test
+.DS_Store
+*.log
+coverage/
+.turbo/
+# backend
+apps/backend/.medusa/
+apps/backend/uploads/
+apps/backend/static/
+apps/backend/dist/
+apps/backend/build/
+# storefront
+apps/storefront/.next/
+apps/storefront/out/
+apps/storefront/next-env.d.ts
+apps/storefront/test-results/
+apps/storefront/playwright-report/
+apps/storefront/public/sw.js*
+*.tsbuildinfo
+.vercel
