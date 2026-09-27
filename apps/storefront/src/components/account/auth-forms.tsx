@@ -35,7 +35,7 @@ export function LoginForm({ next }: { next?: string }) {
     <form action={action} className="flex flex-col gap-4">
       <input type="hidden" name="next" value={next ?? ""} />
       <Status state={state} />
-      <Field label="E-mail" name="email" type="email" autoComplete="email" required />
+      <Field label="E-mail" name="email" type="email" autoComplete="email" required defaultValue={state?.fields?.email} key={`e-${state?.fields?.email ?? ""}`} />
       <Field label="Parolă" name="password" type="password" autoComplete="current-password" required />
       <Link href="/account/reset-password" className="self-end text-xs text-muted underline-offset-2 hover:underline">
         Ai uitat parola?
@@ -57,10 +57,10 @@ export function RegisterForm() {
     <form action={action} className="flex flex-col gap-4">
       <Status state={state} />
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Prenume" name="first_name" autoComplete="given-name" required />
-        <Field label="Nume" name="last_name" autoComplete="family-name" required />
+        <Field label="Prenume" name="first_name" autoComplete="given-name" required defaultValue={state?.fields?.first_name} key={`f-${state?.fields?.first_name ?? ""}`} />
+        <Field label="Nume" name="last_name" autoComplete="family-name" required defaultValue={state?.fields?.last_name} key={`l-${state?.fields?.last_name ?? ""}`} />
       </div>
-      <Field label="E-mail" name="email" type="email" autoComplete="email" required />
+      <Field label="E-mail" name="email" type="email" autoComplete="email" required defaultValue={state?.fields?.email} key={`e-${state?.fields?.email ?? ""}`} />
       <Field label="Parolă" name="password" type="password" autoComplete="new-password" minLength={8} required hint="Minim 8 caractere." />
       <Checkbox
         name="terms"

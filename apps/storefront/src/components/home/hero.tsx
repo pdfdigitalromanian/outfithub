@@ -51,7 +51,7 @@ export function Hero({ hero, products }: { hero: SiteContent["homepage"]["hero"]
         <div className="relative lg:col-span-6 xl:col-span-7">
           {hero.image_url ? (
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl sm:aspect-[5/4] lg:aspect-[4/5] xl:aspect-[5/4]">
-              <Image src={hero.image_url} alt={hero.image_alt || ""} fill priority sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
+              <Image src={hero.image_url} alt={hero.image_alt || ""} fill loading="eager" fetchPriority="high" sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
             </div>
           ) : main ? (
             <div className="grid grid-cols-5 grid-rows-6 gap-3 sm:gap-4 h-[440px] sm:h-[560px] xl:h-[640px]">
@@ -92,7 +92,7 @@ function CollageTile({
           src={product.thumbnail}
           alt={product.title}
           fill
-          priority={priority}
+          loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"}
           sizes={sizes}
           className="object-cover transition-transform duration-[1200ms] ease-[var(--ease-out-soft)] group-hover:scale-[1.04]"
         />

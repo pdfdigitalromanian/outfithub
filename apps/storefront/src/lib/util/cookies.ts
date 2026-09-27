@@ -10,12 +10,19 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
   return token ? { authorization: `Bearer ${token}` } : {}
 }
 
+/** Non-sensitive flag readable by client JS so UI can react to login/logout. */
+export const AUTH_FLAG_COOKIE = "oh_auth"
+
 export async function setAuthToken(token: string) {
-  ;(await cookies()).set(JWT_COOKIE, token, { maxAge: 60 * 60 * 24 * 7, httpOnly: true, sameSite: "lax", secure, path: "/" })
+  const jar = await cookies()
+  jar.set(JWT_COOKIE, token, { maxAge: 60 * 60 * 24 * 7, httpOnly: true, sameSite: "lax", secure, path: "/" })
+  jar.set(AUTH_FLAG_COOKIE, String(Date.now()), { maxAge: 60 * 60 * 24 * 7, httpOnly: false, sameSite: "lax", secure, path: "/" })
 }
 
 export async function removeAuthToken() {
-  ;(await cookies()).delete(JWT_COOKIE)
+  const jar = await cookies()
+  jar.delete(JWT_COOKIE)
+  jar.delete(AUTH_FLAG_COOKIE)
 }
 
 export async function getCartId() {

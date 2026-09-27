@@ -76,8 +76,8 @@ export function Header({ nav }: { nav: NavData }) {
   const links = [
     { href: "/shop", label: "Magazin" },
     ...nav.categories.slice(0, 4).map((c) => ({ href: `/categories/${c.handle}`, label: c.name })),
-    ...nav.collections.slice(0, 2).map((c) => ({ href: `/collections/${c.handle}`, label: c.title })),
-  ]
+    ...nav.collections.slice(0, 2).map((c) => ({ href: `/collections/${c.handle}`, label: c.title, wide: true })),
+  ] as { href: string; label: string; wide?: boolean }[]
 
   return (
     <>
@@ -103,7 +103,7 @@ export function Header({ nav }: { nav: NavData }) {
                 {links.map((l) => {
                   const active = pathname === l.href || (l.href !== "/shop" && pathname?.startsWith(l.href))
                   return (
-                    <li key={l.href}>
+                    <li key={l.href} className={l.wide ? "hidden xl:block" : undefined}>
                       <Link
                         href={l.href}
                         aria-current={active ? "page" : undefined}

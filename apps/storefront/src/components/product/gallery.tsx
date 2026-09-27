@@ -47,7 +47,7 @@ export function Gallery({ images, title }: { images: GalleryImage[]; title: stri
               className="product-frame relative aspect-[4/5] w-full shrink-0 snap-center"
               aria-label={`Mărește imaginea ${i + 1} din ${images.length}`}
             >
-              <Image src={img.url} alt={img.alt} fill priority={i === 0} sizes="100vw" className="object-cover" />
+              <Image src={img.url} alt={img.alt} fill loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} sizes="100vw" className="object-cover" />
             </button>
           ))}
         </div>
@@ -83,7 +83,7 @@ export function Gallery({ images, title }: { images: GalleryImage[]; title: stri
               src={img.url}
               alt={img.alt}
               fill
-              priority={i === 0}
+              loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"}
               sizes={i === 0 ? "(min-width: 1280px) 50vw, 58vw" : "(min-width: 1280px) 25vw, 29vw"}
               className="object-cover transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.02]"
             />

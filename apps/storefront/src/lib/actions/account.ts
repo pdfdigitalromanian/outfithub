@@ -5,7 +5,8 @@ import { sdk } from "../medusa"
 import { getAuthHeaders, getCartId, removeAuthToken, setAuthToken } from "../util/cookies"
 import type { AddressInput } from "./cart"
 
-export type FormState = { error?: string; success?: string } | null
+/** `fields` echoes submitted (non-secret) values so forms keep them after an error. */
+export type FormState = { error?: string; success?: string; fields?: Record<string, string> } | null
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim()
 
@@ -17,14 +18,15 @@ async function transferCart() {
 export async function loginAction(_: FormState, fd: FormData): Promise<FormState> {
   const email = str(fd, "email").toLowerCase()
   const password = str(fd, "password")
-  if (!email || !password) return { error: "Completează e-mailul și parola." }
+  const fields = { email }
+  if (!email || !password) return { error: "Completează e-mailul și parola.", fields }
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
-    if (typeof token !== "string") return { error: "Autentificarea necesită un pas suplimentar care nu este suportat." }
+    if (typeof token !== "string") return { error: "Autentificarea necesită un pas suplimentar care nu este suportat.", fields }
     await setAuthToken(token)
     await transferCart()
   } catch {
-    return { error: "E-mail sau parolă incorecte." }
+    return { error: "E-mail sau parolă incorecte.", fields }
   }
   const next = str(fd, "next")
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/account")
@@ -35,9 +37,10 @@ export async function registerAction(_: FormState, fd: FormData): Promise<FormSt
   const password = str(fd, "password")
   const first_name = str(fd, "first_name")
   const last_name = str(fd, "last_name")
-  if (!email || !first_name || !last_name) return { error: "Completează toate câmpurile obligatorii." }
-  if (password.length < 8) return { error: "Parola trebuie să aibă cel puțin 8 caractere." }
-  if (fd.get("terms") !== "on") return { error: "Trebuie să accepți termenii și condițiile." }
+  const fields = { email, first_name, last_name }
+  if (!email || !first_name || !last_name) return { error: "Completează toate câmpurile obligatorii.", fields }
+  if (password.length < 8) return { error: "Parola trebuie să aibă cel puțin 8 caractere.", fields }
+  if (fd.get("terms") !== "on") return { error: "Trebuie să accepți termenii și condițiile.", fields }
   try {
     const regToken = await sdk.auth.register("customer", "emailpass", { email, password })
     await sdk.store.customer.create({ email, first_name, last_name }, {}, { authorization: `Bearer ${regToken}` })
@@ -46,7 +49,7 @@ export async function registerAction(_: FormState, fd: FormData): Promise<FormSt
     await transferCart()
   } catch (e) {
     const msg = (e as Error).message ?? ""
-    return { error: /exist/i.test(msg) ? "Există deja un cont cu acest e-mail." : "Contul nu a putut fi creat." }
+    return { error: /exist/i.test(msg) ? "Există deja un cont cu acest e-mail." : "Contul nu a putut fi creat.", fields }
   }
   redirect("/account")
 }

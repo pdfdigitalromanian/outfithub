@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ArrowUpRight, Heart, Package, User } from "lucide-react"
 import { Sheet } from "../ui/sheet"
 import type { NavData } from "./header"
+import { InstallButton } from "../pwa/install-button"
 
 export function MobileMenu({
   open,
@@ -41,6 +42,7 @@ export function MobileMenu({
             </div>
           </div>
         )}
+        <InstallButton className="mt-8 inline-flex items-center justify-center gap-2 rounded-full border border-line px-4 py-3 text-sm" />
         <div className="mt-auto grid grid-cols-3 gap-2 pt-8">
           {[
             { href: "/account", label: "Cont", icon: User },

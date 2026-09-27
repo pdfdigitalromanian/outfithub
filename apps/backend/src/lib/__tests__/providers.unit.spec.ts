@@ -9,6 +9,10 @@ const jsonResponse = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } })
 
 describe("Sameday client", () => {
+  const saved = process.env.SAMEDAY_API_HOST
+  beforeEach(() => delete process.env.SAMEDAY_API_HOST)
+  afterAll(() => { if (saved) process.env.SAMEDAY_API_HOST = saved })
+
   it("encodes nested form bodies like PHP http_build_query", () => {
     const body = toFormBody({ awbRecipient: { name: "Ana", cityString: "Cluj" }, parcels: [{ weight: 1 }], lockerLastMile: undefined })
     expect(decodeURIComponent(body)).toBe("awbRecipient[name]=Ana&awbRecipient[cityString]=Cluj&parcels[0][weight]=1")

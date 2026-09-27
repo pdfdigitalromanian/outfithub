@@ -88,7 +88,7 @@ export const SeoPanel = ({ type, id, storefrontPath }: { type: "product" | "coll
           <Text size="xsmall" className="text-ui-fg-subtle">Generated automatically · edit a field to override it</Text>
         </div>
         <Button size="small" variant="secondary" isLoading={reset.isPending} onClick={() => reset.mutate()}>
-          Reset to automatic
+          Regenerate
         </Button>
       </div>
       <div className="px-6 py-4">

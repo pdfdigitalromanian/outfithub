@@ -190,8 +190,8 @@ export function ListingToolbar({ filters, facets, total, hide = [] }: Props) {
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <fieldset className="py-5">
-      <legend className="mb-3 text-sm font-medium">{title}</legend>
-      {children}
+      <legend className="float-left mb-3 w-full text-sm font-medium">{title}</legend>
+      <div className="clear-both">{children}</div>
     </fieldset>
   )
 }

@@ -125,7 +125,8 @@ export function ProductInfo({
         const showError = attempted && !selected[o.title]
         return (
           <fieldset key={o.title} className="relative">
-            <legend className="mb-3 text-sm">
+            {/* float makes the legend participate in normal flow (margins apply) */}
+            <legend className="float-left mb-3 w-full pr-28 text-sm">
               <span className="font-medium">{o.title}</span>
               {selected[o.title] && <span className="text-muted">: {selected[o.title]}</span>}
             </legend>
@@ -134,7 +135,7 @@ export function ProductInfo({
                 <Ruler className="h-3.5 w-3.5" /> Ghid mărimi
               </button>
             )}
-            <div className={cn("flex flex-wrap gap-2", isSize && "grid grid-cols-4 sm:grid-cols-5", showError && "rounded-lg ring-2 ring-clay/40 ring-offset-4 ring-offset-paper")}>
+            <div className={cn("clear-both flex flex-wrap gap-2", isSize && "grid grid-cols-4 sm:grid-cols-5", showError && "rounded-lg ring-2 ring-clay/40 ring-offset-4 ring-offset-paper")}>
               {o.values.map((value) => {
                 const active = selected[o.title] === value
                 const available = isAvailable(o.title, value)

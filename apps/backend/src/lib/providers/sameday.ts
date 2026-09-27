@@ -100,7 +100,8 @@ export class SamedayClient {
     if (!creds.username || !creds.password) {
       throw new ProviderError("sameday", "not_configured", "Sameday username/password are not configured")
     }
-    this.host = SAMEDAY_HOSTS[creds.environment ?? "production"] ?? SAMEDAY_HOSTS.production
+    // SAMEDAY_API_HOST allows pointing to a staging/mock server (tests, QA).
+    this.host = (process.env.SAMEDAY_API_HOST || SAMEDAY_HOSTS[creds.environment ?? "production"] || SAMEDAY_HOSTS.production).replace(/\/$/, "")
     this.token = opts.token ?? null
     this.onToken = opts.onToken
     this.fetchImpl = opts.fetchImpl ?? fetch

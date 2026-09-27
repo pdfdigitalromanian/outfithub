@@ -45,7 +45,9 @@ export function maskSecret(value: unknown): string | null {
   if (typeof value !== "string" || !value.length) {
     return null
   }
-  return value.length <= 8 ? "••••" : `••••${value.slice(-4)}`
+  // Long values (JSON keys, certificates) are never partially revealed.
+  if (value.length <= 8 || value.length > 200) return "•••• (saved)"
+  return `••••${value.slice(-4)}`
 }
 
 /** JSON columns are typed as objects; arrays are valid JSON too. */

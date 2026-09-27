@@ -12,7 +12,8 @@ import {
 import { syncWishlistAction, toggleWishlistAction } from "@/lib/actions/wishlist"
 import { readJson, writeJson } from "@/lib/client/storage"
 import { track } from "@/lib/client/tracking"
-import { CONSENT_VERSION, readConsent, writeConsent, type ConsentState } from "@/lib/client/consent"
+import { CONSENT_VERSION, readConsent, readCookie, writeConsent, type ConsentState } from "@/lib/client/consent"
+import { usePathname } from "next/navigation"
 
 /* ------------------------------------------------------------------ cart */
 
@@ -111,8 +112,19 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [ids, setIds] = useState<string[]>([])
   const [ready, setReady] = useState(false)
   const [remote, setRemote] = useState(false)
+  const pathname = usePathname()
+  const [authFlag, setAuthFlag] = useState<string | undefined>(undefined)
+
+  // Re-sync whenever the login state changes (login/register/logout set the
+  // non-sensitive `oh_auth` flag cookie); checked cheaply on navigation.
+  useEffect(() => {
+    const flag = readCookie("oh_auth") ?? ""
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (flag !== authFlag) setAuthFlag(flag)
+  }, [pathname, authFlag])
 
   useEffect(() => {
+    if (authFlag === undefined) return
     const local = readJson<string[]>(WISHLIST_KEY, [])
     // Hydrate from localStorage (browser-only external store).
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -123,10 +135,12 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         setRemote(true)
         setIds(res.product_ids)
         writeJson(WISHLIST_KEY, res.product_ids)
+      } else {
+        setRemote(false)
       }
       setReady(true)
     })
-  }, [])
+  }, [authFlag])
 
   const toggle = useCallback(
     (id: string, meta?: { name: string; price: number }) => {

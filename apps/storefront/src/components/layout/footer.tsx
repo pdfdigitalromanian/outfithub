@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Logo } from "../ui/logo"
 import { CookieSettingsLink } from "../consent/consent-banner"
+import { InstallButton } from "../pwa/install-button"
 import type { StoreConfig } from "@/lib/data/content"
 
 const SOCIAL_LABELS: Record<string, string> = {
@@ -46,6 +47,7 @@ export function Footer({ config, categories }: { config: StoreConfig; categories
         <div className="md:col-span-3">
           <FooterCol title="Legal" links={legal.map((p) => ({ href: `/pages/${p.handle}`, label: p.title }))} bare />
           <CookieSettingsLink className="mt-2.5 text-left text-sm text-paper/70 hover:text-paper" />
+          <InstallButton className="mt-2.5 flex items-center gap-2 text-left text-sm text-paper/70 hover:text-paper" />
           <div className="mt-6 flex flex-wrap gap-3">
             {/* ANPC pictograms required by Ordinul ANPC nr. 449/2022 */}
             <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="nofollow noopener" className="rounded-md bg-paper px-3 py-2 text-[0.68rem] font-semibold leading-tight text-ink" aria-label="ANPC – Soluționarea alternativă a litigiilor">

@@ -14,10 +14,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <p className="eyebrow">Contul meu</p>
       <h1 className="display mt-2 text-5xl sm:text-6xl">Salut, {customer.first_name || "acolo"}</h1>
       <div className="mt-10 grid gap-8 lg:grid-cols-12">
-        <aside className="lg:col-span-3">
+        <aside className="min-w-0 lg:col-span-3">
           <AccountNav />
         </aside>
-        <div className="lg:col-span-9">{children}</div>
+        <div className="min-w-0 lg:col-span-9">{children}</div>
       </div>
     </div>
   )

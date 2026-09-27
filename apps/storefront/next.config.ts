@@ -12,6 +12,7 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self), payment=(self)" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 ]
@@ -26,6 +27,8 @@ const nextConfig: NextConfig = {
     imageSizes: [64, 96, 128, 200, 256, 320, 400],
     remotePatterns: [...remoteHosts].map((hostname) => ({ protocol: hostname === "localhost" ? "http" : "https", hostname })),
     minimumCacheTTL: 60 * 60 * 24,
+    // Local backend images (http://localhost:9000/static) only in development; never in production (SSRF).
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
   },
   async headers() {
     return [
