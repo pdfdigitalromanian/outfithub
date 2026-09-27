@@ -1,0 +1,5 @@
+/** Inline script run before any tag: Google Consent Mode v2 defaults + stored choice. */
+export const CONSENT_DEFAULTS_SCRIPT = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=window.gtag||gtag;
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',personalization_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});
+gtag('set','ads_data_redaction',true);gtag('set','url_passthrough',true);
+try{var c=document.cookie.split('; ').find(function(x){return x.indexOf('oh_consent=')===0});if(c){var s=JSON.parse(decodeURIComponent(c.split('=').slice(1).join('=')));gtag('consent','update',{analytics_storage:s.analytics?'granted':'denied',ad_storage:s.marketing?'granted':'denied',ad_user_data:s.marketing?'granted':'denied',ad_personalization:s.marketing?'granted':'denied',personalization_storage:s.preferences?'granted':'denied'});}}catch(e){}`

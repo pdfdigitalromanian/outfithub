@@ -1,3 +1,4 @@
+import { revalidateStorefront } from "../../../../../lib/storefront-revalidate"
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { SEO_MODULE } from "../../../../../modules/seo"
@@ -21,5 +22,6 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
 export async function POST(req: AuthenticatedMedusaRequest<PostSeoBody>, res: MedusaResponse) {
   const seo = req.scope.resolve<SeoModuleService>(SEO_MODULE)
   await seo.applyManual(typeParam(req.params.type), req.params.id, req.validatedBody)
+  void revalidateStorefront(["seo", "sitemap"])
   res.json({ seo: await seo.getFor(typeParam(req.params.type), req.params.id) })
 }

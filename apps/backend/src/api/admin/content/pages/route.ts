@@ -1,3 +1,4 @@
+import { revalidateStorefront } from "../../../../lib/storefront-revalidate"
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { CONTENT_MODULE } from "../../../../modules/content"
 import type ContentModuleService from "../../../../modules/content/service"
@@ -11,5 +12,6 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
 export async function POST(req: AuthenticatedMedusaRequest<PostContentPageBody>, res: MedusaResponse) {
   const svc = req.scope.resolve<ContentModuleService>(CONTENT_MODULE)
   const page = await svc.createContentPages(req.validatedBody)
+  void revalidateStorefront(["content"])
   res.json({ page })
 }

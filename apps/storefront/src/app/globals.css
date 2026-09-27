@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/*
+ * OutfitHub design tokens.
+ * Warm paper neutrals, ink typography, one restrained clay accent.
+ * Radii are soft and generous; glass is reserved for floating chrome
+ * (header on scroll, mobile buy bar, drawers) and always keeps AA contrast.
+ */
+@theme {
+  --color-paper: #f6f3ee;
+  --color-paper-2: #efebe4;
+  --color-sand: #e7e1d7;
+  --color-stone: #d6cfc3;
+  --color-line: #e3ddd3;
+  --color-surface: #fffdfa;
+  --color-ink: #161513;
+  --color-ink-2: #2a2825;
+  --color-muted: #6c675f;
+  --color-subtle: #8f897f;
+  --color-clay: #a4532f;
+  --color-clay-soft: #f3e3d8;
+  --color-moss: #4c5a3f;
+  --color-moss-soft: #e4e8dc;
+  --color-danger: #a8321f;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), "Times New Roman", serif;
+
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 2.5rem;
+
+  --shadow-soft: 0 1px 2px rgb(22 21 19 / 0.04), 0 8px 24px -12px rgb(22 21 19 / 0.12);
+  --shadow-float: 0 1px 1px rgb(22 21 19 / 0.04), 0 24px 48px -24px rgb(22 21 19 / 0.28);
+  --shadow-glass: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 10px 30px -18px rgb(22 21 19 / 0.35);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-fade-in: fade-in 0.4s var(--ease-out-soft) both;
+  --animate-slide-in-right: slide-in-right 0.45s var(--ease-out-soft) both;
+  --animate-slide-in-left: slide-in-left 0.45s var(--ease-out-soft) both;
+  --animate-rise: rise 0.5s var(--ease-out-soft) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-in-right {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes slide-in-left {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 1520px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .container-page { padding-inline: 2rem; }
+  }
+  @media (min-width: 1280px) {
+    .container-page { padding-inline: 3rem; }
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 0.98;
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+
+  /* Frosted glass used only on floating chrome. */
+  .glass {
+    background: rgb(255 253 250 / 0.72);
+    backdrop-filter: saturate(1.6) blur(18px);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px);
+    box-shadow: var(--shadow-glass);
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .glass { background: rgb(255 253 250 / 0.96); }
+  }
+
+  /* Product imagery sits on warm paper; multiply blends studio backdrops in. */
+  .product-frame {
+    background: var(--color-paper-2);
+    isolation: isolate;
+  }
+  .product-frame img {
+    mix-blend-mode: multiply;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-paper-2) 0%, var(--color-sand) 50%, var(--color-paper-2) 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+
+  .prose-legal {
+    color: var(--color-ink-2);
+    line-height: 1.75;
+    font-size: 0.975rem;
+  }
+  .prose-legal h2 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.15;
+    margin: 2.5rem 0 0.75rem;
+    color: var(--color-ink);
+  }
+  .prose-legal h3 { font-weight: 600; margin: 1.75rem 0 0.5rem; }
+  .prose-legal p { margin: 0.9rem 0; }
+  .prose-legal ul, .prose-legal ol { margin: 0.9rem 0; padding-left: 1.25rem; }
+  .prose-legal ul { list-style: disc; }
+  .prose-legal ol { list-style: decimal; }
+  .prose-legal li { margin: 0.35rem 0; }
+  .prose-legal a { text-decoration: underline; text-underline-offset: 3px; }
+  .prose-legal blockquote {
+    border-left: 2px solid var(--color-stone);
+    padding: 0.25rem 0 0.25rem 1rem;
+    color: var(--color-muted);
+    margin: 1.25rem 0;
+  }
+  .prose-legal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+  }
+  .prose-legal th, .prose-legal td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+  .prose-legal th { font-weight: 600; background: var(--color-paper-2); }
+  .prose-legal code { font-size: 0.85em; background: var(--color-paper-2); padding: 0.1em 0.35em; border-radius: 4px; }
+
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -133,9 +133,13 @@ class IntegrationsModuleService extends MedusaService({
       }
     }
 
+    const credentialsChanged = Object.values(input.secrets ?? {}).some((v) => v !== undefined && v !== "")
+    if (credentialsChanged) {
+      // Cached provider tokens belong to the previous credentials.
+      for (const k of Object.keys(secrets)) if (k.startsWith("_token")) delete secrets[k]
+    }
     const missing = missingRequiredFields(provider, config, secrets)
     const conn = await this.findConnection(provider)
-    const credentialsChanged = Object.values(input.secrets ?? {}).some((v) => v !== undefined && v !== "")
     let status: ConnectionStatus = (conn?.status as ConnectionStatus) ?? "not_configured"
     let status_message = conn?.status_message ?? null
     if (missing.length) {

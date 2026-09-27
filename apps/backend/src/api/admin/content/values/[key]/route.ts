@@ -1,3 +1,4 @@
+import { revalidateStorefront } from "../../../../../lib/storefront-revalidate"
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { CONTENT_MODULE } from "../../../../../modules/content"
@@ -14,6 +15,7 @@ export async function POST(req: AuthenticatedMedusaRequest<Record<string, unknow
   if (!CONTENT_KEYS.includes(key)) throw new MedusaError(MedusaError.Types.NOT_FOUND, "Unknown content key")
   const value = sanitize(CONTENT_DEFAULTS[key] as unknown, req.validatedBody)
   const svc = req.scope.resolve<ContentModuleService>(CONTENT_MODULE)
+  void revalidateStorefront(["content"])
   res.json({ value: await svc.setValue(key, value as Record<string, unknown>) })
 }
 

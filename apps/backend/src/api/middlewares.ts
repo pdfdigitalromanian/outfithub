@@ -1,4 +1,5 @@
 import {
+  allowFields,
   defineMiddlewares,
   validateAndTransformBody,
   validateAndTransformQuery,
@@ -16,6 +17,23 @@ import {
 
 export default defineMiddlewares({
   routes: [
+    {
+      // Storefront listings/PDP need category membership and the option title
+      // of each variant option value (for color/size pickers and filters).
+      matcher: "/store/products*",
+      middlewares: [
+        allowFields(
+          "categories",
+          "categories.id",
+          "categories.handle",
+          "categories.name",
+          "variants.options.option",
+          "variants.options.option.id",
+          "variants.options.option.title",
+          "variants.options.option_id"
+        ),
+      ],
+    },
     {
       matcher: "/store/customers/me/wishlist",
       method: ["POST"],

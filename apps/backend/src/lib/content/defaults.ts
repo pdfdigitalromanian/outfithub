@@ -13,7 +13,7 @@ export const CONTENT_DEFAULTS = {
       cta_href: "/shop",
       secondary_label: "Noutăți",
       secondary_href: "/shop?sort=newest",
-      image_url: "/images/hero.jpg",
+      image_url: "",
       image_alt: "Model purtând o ținută OutfitHub din colecția de sezon",
     },
     featured_collections: [] as string[],
@@ -25,7 +25,7 @@ export const CONTENT_DEFAULTS = {
         "Construim fiecare piesă în jurul unui singur principiu: să o porți des. Bumbac greu, cusături curate, culori care nu obosesc.",
       cta_label: "Despre noi",
       cta_href: "/pages/despre-noi",
-      image_url: "/images/editorial.jpg",
+      image_url: "",
       image_alt: "Detaliu de material și cusături OutfitHub",
     },
     usps: [
@@ -57,7 +57,7 @@ export const CONTENT_DEFAULTS = {
     default_title: "OutfitHub — haine și accesorii",
     default_description:
       "Magazin online de haine și accesorii. Livrare rapidă prin Sameday, la ușă sau în Easybox, retur 30 de zile.",
-    default_og_image: "/images/og-default.jpg",
+    default_og_image: "",
     twitter_handle: "",
     product_title_template: "{title} – {collection}",
     product_description_template: "{title}: {excerpt} Livrare rapidă în toată România, retur 30 de zile.",

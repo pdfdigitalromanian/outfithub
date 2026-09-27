@@ -1,3 +1,4 @@
+import { revalidateStorefront } from "../../../../../lib/storefront-revalidate"
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { CONTENT_MODULE } from "../../../../../modules/content"
 import type ContentModuleService from "../../../../../modules/content/service"
@@ -11,11 +12,13 @@ export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) 
 export async function POST(req: AuthenticatedMedusaRequest<PostContentPageBody>, res: MedusaResponse) {
   const svc = req.scope.resolve<ContentModuleService>(CONTENT_MODULE)
   const page = await svc.updateContentPages({ id: req.params.id, ...req.validatedBody })
+  void revalidateStorefront(["content", "sitemap"])
   res.json({ page })
 }
 
 export async function DELETE(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
   const svc = req.scope.resolve<ContentModuleService>(CONTENT_MODULE)
   await svc.deleteContentPages(req.params.id)
+  void revalidateStorefront(["content", "sitemap"])
   res.json({ id: req.params.id, deleted: true })
 }

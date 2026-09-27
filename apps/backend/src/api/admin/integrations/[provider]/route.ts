@@ -1,3 +1,4 @@
+import { revalidateStorefront } from "../../../../lib/storefront-revalidate"
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import { INTEGRATIONS_MODULE } from "../../../../modules/integrations"
@@ -25,5 +26,6 @@ export async function POST(req: AuthenticatedMedusaRequest<PostIntegrationBody>,
   const svc = req.scope.resolve<IntegrationsModuleService>(INTEGRATIONS_MODULE)
   await svc.saveIntegration(provider, req.validatedBody)
   const test = await testIntegration(req.scope, provider)
+  void revalidateStorefront(["content"])
   res.json({ integration: await svc.describeIntegration(provider), test })
 }

@@ -20,6 +20,5 @@ apps/storefront/out/
 apps/storefront/next-env.d.ts
 apps/storefront/test-results/
 apps/storefront/playwright-report/
-apps/storefront/public/sw.js*
 *.tsbuildinfo
 .vercel

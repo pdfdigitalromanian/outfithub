@@ -56,12 +56,18 @@ export default async function seed({ container }: ExecArgs) {
 
   logger.info("Seeding store…")
   const [store] = await storeModule.listStores()
-  let [salesChannel] = await salesChannelModule.listSalesChannels({ name: "OutfitHub Web" })
+  // Reuse Medusa's default sales channel (already linked to the default
+  // publishable key) so the storefront key maps to exactly one channel.
+  let [salesChannel] = store.default_sales_channel_id
+    ? await salesChannelModule.listSalesChannels({ id: store.default_sales_channel_id })
+    : await salesChannelModule.listSalesChannels({ name: "Default Sales Channel" })
   if (!salesChannel) {
     const { result } = await createSalesChannelsWorkflow(container).run({
       input: { salesChannelsData: [{ name: "OutfitHub Web", description: "Magazinul online" }] },
     })
     salesChannel = result[0]
+  } else {
+    await salesChannelModule.updateSalesChannels(salesChannel.id, { name: "OutfitHub Web", description: "Magazinul online" })
   }
 
   await updateStoresWorkflow(container).run({
