@@ -22,3 +22,7 @@ apps/storefront/test-results/
 apps/storefront/playwright-report/
 *.tsbuildinfo
 .vercel
+
+# local Redis snapshots
+dump.rdb
+*.rdb
