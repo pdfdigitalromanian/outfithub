@@ -12,7 +12,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const filtered = Object.keys(sp).some((k) => k !== "page")
   return pageMetadata({
     title: "Toate produsele",
-    description: "Toată colecția OutfitHub: tricouri, hanorace și pantaloni. Livrare rapidă prin Sameday, retur 30 de zile.",
+    description: "Toate produsele din magazin, filtrate după mărime, culoare și preț. Livrare rapidă prin Sameday, la ușă sau în Easybox.",
     path: "/shop",
     // Filtered/sorted variants are not indexed; canonical points to /shop.
     noindex: filtered,

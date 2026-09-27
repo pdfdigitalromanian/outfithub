@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Suspense } from "react"
 import { Gallery } from "@/components/product/gallery"
 import { ProductInfo } from "@/components/product/product-info"
 import { ProductAccordion } from "@/components/product/product-accordion"
@@ -98,7 +97,6 @@ export default async function ProductPage({ params }: Props) {
           </div>
           <div className="md:col-span-5">
             <div className="md:sticky md:top-24">
-              <Suspense>
                 <ProductInfo
                   product={{ id: product.id, title: product.title!, subtitle: product.subtitle ?? null, collection: product.collection?.title ?? null }}
                   options={options}
@@ -106,7 +104,6 @@ export default async function ProductPage({ params }: Props) {
                   deliveryEstimate={content.shipping.delivery_estimate}
                   returnsDays={content.shipping.returns_days}
                 />
-              </Suspense>
               <div className="mt-8">
                 <ProductAccordion
                   items={[

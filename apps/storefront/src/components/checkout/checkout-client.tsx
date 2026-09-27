@@ -19,7 +19,11 @@ import { Button } from "../ui/button"
 import { Checkbox, Field, SelectField } from "../ui/input"
 import { EasyboxSelector, type Locker } from "./easybox-selector"
 import { PromoCode, Totals } from "../cart/cart-summary"
-import { StripePayment, type StripeHandle } from "./stripe-payment"
+import dynamic from "next/dynamic"
+import type { StripeHandle } from "./stripe-payment"
+
+// Stripe code is only downloaded when card payment is selected.
+const StripePayment = dynamic(() => import("./stripe-payment").then((m) => m.StripePayment), { ssr: false })
 import { RO_COUNTIES } from "@/lib/ro-counties"
 import { formatMoney } from "@/lib/util/format"
 import { track } from "@/lib/client/tracking"

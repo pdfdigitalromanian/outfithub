@@ -1,7 +1,7 @@
 "use client"
 
 import { forwardRef, useImperativeHandle, useMemo } from "react"
-import { loadStripe } from "@stripe/stripe-js"
+import { loadStripe } from "@stripe/stripe-js/pure"
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 
 export type StripeHandle = { confirm: () => Promise<{ ok: boolean; error?: string }> }

@@ -1,6 +1,5 @@
 "use client"
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Check, Ruler, Truck, RotateCcw } from "lucide-react"
 import type { VariantInfo } from "@/lib/catalog"
@@ -27,9 +26,6 @@ export function ProductInfo({
   deliveryEstimate: string
   returnsDays: number
 }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const params = useSearchParams()
   const { add, loading, error } = useCart()
   const [added, setAdded] = useState(false)
   const [showSticky, setShowSticky] = useState(false)
@@ -42,9 +38,9 @@ export function ProductInfo({
     [options]
   )
 
+  // Server-rendered default selection; a ?variant= deep link is applied after
+  // hydration so the page stays statically renderable (no CSR bailout / CLS).
   const initial = useMemo(() => {
-    const fromUrl = variants.find((v) => v.id === params.get("variant"))
-    if (fromUrl) return fromUrl.options
     if (variants.length === 1) return variants[0].options
     // Preselect the first in-stock color, leave size for the shopper.
     const colorOpt = sortedOptions.find((o) => COLOR_RX.test(o.title))
@@ -60,12 +56,19 @@ export function ProductInfo({
   )
 
   useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("variant")
+    const fromUrl = id ? variants.find((v) => v.id === id) : null
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (fromUrl) setSelected(fromUrl.options)
+  }, [variants])
+
+  useEffect(() => {
     if (!variant || variants.length < 2) return
-    const q = new URLSearchParams(params.toString())
-    if (q.get("variant") === variant.id) return
-    q.set("variant", variant.id)
-    router.replace(`${pathname}?${q.toString()}`, { scroll: false })
-  }, [variant, variants.length, params, pathname, router])
+    const url = new URL(window.location.href)
+    if (url.searchParams.get("variant") === variant.id) return
+    url.searchParams.set("variant", variant.id)
+    window.history.replaceState(window.history.state, "", url)
+  }, [variant, variants.length])
 
   useEffect(() => {
     const el = ctaRef.current

@@ -55,7 +55,7 @@ export function ProductCard({ product, priority, sizes }: { product: ProductCard
             </Link>
           </h3>
           {product.colors.length > 1 ? (
-            <span className="mt-1.5 flex items-center gap-1" aria-label={`${product.colors.length} culori: ${product.colors.join(", ")}`}>
+            <span role="img" className="mt-1.5 flex items-center gap-1" aria-label={`${product.colors.length} culori: ${product.colors.join(", ")}`}>
               {product.colors.slice(0, 5).map((c) => (
                 <span key={c} className="h-3 w-3 rounded-full border border-ink/15" style={{ background: swatchFor(c) }} />
               ))}

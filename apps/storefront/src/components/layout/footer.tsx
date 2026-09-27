@@ -60,7 +60,7 @@ export function Footer({ config, categories }: { config: StoreConfig; categories
         </div>
       </div>
       <div className="border-t border-paper/10">
-        <div className="container-page flex flex-col gap-2 py-6 text-xs text-paper/55 md:flex-row md:items-center md:justify-between">
+        <div className="container-page flex flex-col gap-2 py-6 text-xs text-paper/70 md:flex-row md:items-center md:justify-between">
           <p>
             © {year} {company.legal_name || company.trade_name}
             {company.cui ? ` · CUI ${company.cui}` : ""}
@@ -76,7 +76,7 @@ export function Footer({ config, categories }: { config: StoreConfig; categories
 function FooterCol({ title, links, bare }: { title: string; links: { href: string; label: string }[]; bare?: boolean }) {
   return (
     <div className={bare ? "" : "md:col-span-2 md:col-start-auto"}>
-      <p className="mb-4 text-xs uppercase tracking-[0.16em] text-paper/45">{title}</p>
+      <p className="mb-4 text-xs uppercase tracking-[0.16em] text-paper/65">{title}</p>
       <ul className="flex flex-col gap-2.5">
         {links.map((l) => (
           <li key={l.href}>

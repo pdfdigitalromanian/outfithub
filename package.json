@@ -1,0 +1,19 @@
+{
+  "name": "outfithub",
+  "private": true,
+  "description": "OutfitHub – Medusa v2 commerce backend + Next.js storefront",
+  "scripts": {
+    "install:all": "npm --prefix apps/backend install && npm --prefix apps/storefront install",
+    "infra:up": "docker compose up -d",
+    "dev:backend": "npm --prefix apps/backend run dev",
+    "dev:storefront": "npm --prefix apps/storefront run dev",
+    "setup:db": "npm --prefix apps/backend run migrate && npm --prefix apps/backend run seed",
+    "typecheck": "npm --prefix apps/backend run typecheck && npm --prefix apps/storefront run typecheck",
+    "lint": "npm --prefix apps/storefront run lint",
+    "test": "npm --prefix apps/backend run test:unit && npm --prefix apps/storefront run test",
+    "test:integration": "npm --prefix apps/backend run test:integration:http",
+    "test:e2e": "npm --prefix apps/storefront run test:e2e",
+    "build": "npm --prefix apps/backend run build && npm --prefix apps/storefront run build"
+  },
+  "engines": { "node": ">=20" }
+}

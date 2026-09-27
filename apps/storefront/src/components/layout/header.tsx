@@ -6,9 +6,12 @@ import { useEffect, useState } from "react"
 import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react"
 import { Logo } from "../ui/logo"
 import { useCart, useWishlist } from "../providers"
-import { MobileMenu } from "./mobile-menu"
-import { SearchDialog } from "./search-dialog"
-import { CartDrawer } from "../cart/cart-drawer"
+import dynamic from "next/dynamic"
+
+// Overlays are code-split and only mounted after first use.
+const MobileMenu = dynamic(() => import("./mobile-menu").then((m) => m.MobileMenu), { ssr: false })
+const SearchDialog = dynamic(() => import("./search-dialog").then((m) => m.SearchDialog), { ssr: false })
+const CartDrawer = dynamic(() => import("../cart/cart-drawer").then((m) => m.CartDrawer), { ssr: false })
 import { cn } from "@/lib/util/cn"
 
 export type NavData = {
@@ -20,12 +23,16 @@ export type NavData = {
 
 export function Header({ nav }: { nav: NavData }) {
   const pathname = usePathname()
-  const { count, setOpen } = useCart()
+  const { count, setOpen, open: cartOpen } = useCart()
   const { ids } = useWishlist()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const minimal = pathname?.startsWith("/checkout")
+  const [used, setUsed] = useState({ menu: false, search: false, cart: false })
+  if ((menuOpen && !used.menu) || (searchOpen && !used.search) || (cartOpen && !used.cart)) {
+    setUsed({ menu: used.menu || menuOpen, search: used.search || searchOpen, cart: used.cart || cartOpen })
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -149,9 +156,9 @@ export function Header({ nav }: { nav: NavData }) {
           </div>
         </div>
       </header>
-      <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} links={links} nav={nav} />
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <CartDrawer freeShippingThreshold={nav.freeShippingThreshold} />
+      {used.menu && <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} links={links} nav={nav} />}
+      {used.search && <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />}
+      {used.cart && <CartDrawer freeShippingThreshold={nav.freeShippingThreshold} />}
     </>
   )
 }

@@ -1,5 +1,6 @@
 import "server-only"
 import { sdk } from "../medusa"
+import { IS_BUILD } from "../util/resilience"
 
 export type SeoData = {
   meta_title: string | null
@@ -35,7 +36,8 @@ export async function getSitemapData(): Promise<SitemapData> {
       next: { revalidate: 900, tags: ["products", "sitemap"] },
       cache: "force-cache",
     })
-  } catch {
-    return { products: [], collections: [], categories: [], pages: [] }
+  } catch (e) {
+    if (IS_BUILD) return { products: [], collections: [], categories: [], pages: [] }
+    throw e
   }
 }

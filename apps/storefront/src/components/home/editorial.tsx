@@ -10,7 +10,7 @@ export function Editorial({ editorial, products }: { editorial: SiteContent["hom
     <section className="container-page" aria-labelledby="editorial-title">
       <div className="grid overflow-hidden rounded-2xl bg-ink text-paper lg:grid-cols-2">
         <div className="flex flex-col justify-center gap-6 p-8 sm:p-12 xl:p-16">
-          {editorial.eyebrow && <p className="eyebrow !text-paper/55">{editorial.eyebrow}</p>}
+          {editorial.eyebrow && <p className="eyebrow !text-paper/70">{editorial.eyebrow}</p>}
           <h2 id="editorial-title" className="display text-5xl sm:text-6xl xl:text-7xl">
             {editorial.title}
           </h2>

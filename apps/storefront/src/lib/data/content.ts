@@ -1,6 +1,7 @@
 import "server-only"
 import { cache } from "react"
 import { sdk } from "../medusa"
+import { IS_BUILD } from "../util/resilience"
 
 export type SiteContent = {
   homepage: {
@@ -86,8 +87,9 @@ export const getStoreConfig = cache(async (): Promise<StoreConfig> => {
       next: { revalidate: 60, tags: ["content"] },
       cache: "force-cache",
     })
-  } catch {
-    return FALLBACK_CONFIG
+  } catch (e) {
+    if (IS_BUILD) return FALLBACK_CONFIG
+    throw e
   }
 })
 
@@ -109,8 +111,9 @@ export async function getPage(handle: string): Promise<ContentPage | null> {
       cache: "force-cache",
     })
     return page
-  } catch {
-    return null
+  } catch (e: any) {
+    if (e?.status === 404 || IS_BUILD) return null
+    throw e
   }
 }
 

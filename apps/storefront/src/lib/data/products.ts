@@ -4,6 +4,7 @@ import type { HttpTypes } from "@medusajs/types"
 import { sdk } from "../medusa"
 import { getRegion } from "./regions"
 import { toCard, type ProductCardData } from "../catalog"
+import { buildSafe } from "../util/resilience"
 
 export const PRODUCT_FIELDS = [
   "id",
@@ -59,7 +60,7 @@ export const getAllProducts = cache(async (): Promise<HttpTypes.StoreProduct[]> 
         next: { revalidate: 60, tags: ["products"] },
         cache: "force-cache",
       })
-      .catch(() => ({ products: [] as HttpTypes.StoreProduct[], count: 0 }))
+      .catch(buildSafe({ products: [] as HttpTypes.StoreProduct[], count: 0 }))
     out.push(...res.products)
     if (out.length >= res.count || !res.products.length) break
   }
@@ -76,7 +77,7 @@ export const getProductByHandle = cache(async (handle: string): Promise<HttpType
       next: { revalidate: 60, tags: ["products", `product-${handle}`] },
       cache: "force-cache",
     })
-    .catch(() => ({ products: [] as HttpTypes.StoreProduct[] }))
+    .catch(buildSafe({ products: [] as HttpTypes.StoreProduct[] }))
   return products[0] ?? null
 })
 
@@ -110,7 +111,7 @@ export const getCollections = cache(async () => {
       next: { revalidate: 300, tags: ["collections"] },
       cache: "force-cache",
     })
-    .catch(() => ({ collections: [] as HttpTypes.StoreCollection[] }))
+    .catch(buildSafe({ collections: [] as HttpTypes.StoreCollection[] }))
   return collections
 })
 
@@ -121,6 +122,6 @@ export const getCategories = cache(async () => {
       next: { revalidate: 300, tags: ["categories"] },
       cache: "force-cache",
     })
-    .catch(() => ({ product_categories: [] as HttpTypes.StoreProductCategory[] }))
+    .catch(buildSafe({ product_categories: [] as HttpTypes.StoreProductCategory[] }))
   return product_categories
 })
