@@ -13,7 +13,12 @@
     "test": "npm --prefix apps/backend run test:unit && npm --prefix apps/storefront run test",
     "test:integration": "npm --prefix apps/backend run test:integration:http",
     "test:e2e": "npm --prefix apps/storefront run test:e2e",
-    "build": "npm --prefix apps/backend run build && npm --prefix apps/storefront run build"
+    "build": "npm --prefix apps/backend run build && npm --prefix apps/storefront run build",
+    "dev": "node scripts/dev.mjs",
+    "postinstall": "npm run install:all",
+    "test:admin": "npm --prefix apps/storefront run test:admin"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=24.15.0 <25 || >=26"
+  }
 }

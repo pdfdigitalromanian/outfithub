@@ -1,6 +1,7 @@
 "use client"
 
 import Script from "next/script"
+import { usePathname } from "next/navigation"
 import { useConsent } from "../providers"
 import type { TrackingConfig } from "@/lib/data/content"
 
@@ -13,6 +14,7 @@ import type { TrackingConfig } from "@/lib/data/content"
  */
 export function TrackingScripts({ config }: { config: TrackingConfig }) {
   const { consent } = useConsent()
+  const pathname = usePathname()
   const ga = config.google_analytics?.measurement_id
   const gtm = config.google_analytics?.gtm_container_id
   const ads = config.google_analytics?.google_ads_id
@@ -21,6 +23,9 @@ export function TrackingScripts({ config }: { config: TrackingConfig }) {
   const analytics = !!consent?.analytics
   const marketing = !!consent?.marketing
   const googleAllowed = (analytics && (ga || gtm)) || (marketing && ads)
+
+  // Payment provider redirects may include a client secret in the URL.
+  if (pathname === "/checkout/return") return null
 
   return (
     <>

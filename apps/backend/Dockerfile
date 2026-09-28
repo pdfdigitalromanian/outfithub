@@ -1,14 +1,14 @@
 # Production image for the Medusa backend (server or worker).
 # Build:  docker build -t outfithub-backend apps/backend
 # Run:    docker run --env-file .env -p 9000:9000 outfithub-backend
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 RUN npx medusa build
 
-FROM node:22-alpine
+FROM node:24-alpine
 WORKDIR /app/.medusa/server
 ENV NODE_ENV=production
 COPY --from=build /app/.medusa/server ./

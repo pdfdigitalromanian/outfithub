@@ -2,8 +2,10 @@
 
 ✅ Complete · 🟡 Implemented but requires credentials · 🟠 Requires provider approval/configuration · ❌ Not implemented
 
-“Verified” notes say how each item was checked in this repository’s environment
-(local Postgres + Redis, seeded store, Playwright against dev and production builds).
+The feature inventory below includes historical verification from the original build.
+The independent 28 September 2026 review and its fresh results are recorded in
+[docs/REVIEW.md](docs/REVIEW.md); historical performance and provider-mock results
+are not new production guarantees.
 
 ## Platform & infrastructure
 
@@ -35,7 +37,7 @@
 | Sameday home delivery option | ✅ | E2E |
 | Easybox searchable selector storing canonical locker ID | ✅ | Verified end-to-end with Sameday API mock (`lockerLastMile=2011`) |
 | Cash on delivery | ✅ | E2E |
-| Stripe card payments | 🟡 | Payment Element integration implemented; needs Stripe keys (not exercised) |
+| Stripe card payments | 🟡 | Payment Element + verified completion route after redirects; needs Stripe keys for live payment/3DS verification |
 | Order confirmation | ✅ | E2E |
 | Customer accounts (register/login/profile/addresses/orders) | ✅ | E2E: register → wishlist merge → address → logout → failed/successful login |
 | Password reset | 🟡 | Implemented; e-mail delivery needs SendGrid (logs locally) |
@@ -50,12 +52,14 @@
 | Analytics events (GA4 / Meta Pixel / TikTok Pixel) | 🟡 | Implemented; needs IDs in Admin → Integrations |
 | Accessibility | ✅ | axe WCAG 2.1 AA: 0 serious/critical on 7 pages × 2 viewports |
 | Performance | ✅ | LCP < 0.4 s locally, CLS 0; overlays/Stripe code-split |
-| 21st.dev components | 🟠 | 21st.dev blocked by the build network; equivalent components hand-built on Radix |
+| 21st.dev components | ❌ | Existing custom Radix components retained; no 21st.dev component imported in this review |
 
 ## Admin (Medusa Admin + extensions)
 
 | Requirement | Status | Notes |
 | --- | --- | --- |
+| Romanian administration | ✅ | Default Romanian; complete installed translation-key coverage, custom extensions and draft-order interface; see docs/ADMIN.md |
+| Responsive administration | ✅ | Phone/tablet/desktop layout, wrapping actions and tabs, scrolling tables and viewport-sized drawers |
 | Products, variants, images, SKU/GTIN, prices, inventory, publish | ✅ | Native Medusa; product workflow verified via Admin API (upload → create → stock → storefront → sitemap) |
 | Collections, categories, orders, customers, discounts | ✅ | Native Medusa (Promotions) |
 | Homepage content, company/legal info, social links, SEO defaults, announcement, shipping info | ✅ | Admin → Storefront |
@@ -82,7 +86,7 @@
 
 | Integration | Status | Notes |
 | --- | --- | --- |
-| Encrypted credential storage, masked in UI/API | ✅ | AES-256-GCM; HTTP test confirms secrets never returned |
+| Encrypted credential storage, masked in UI/API | ✅ | AES-256-GCM; provider error messages redact stored tokens, including provider-echoed credentials |
 | Status model: Not configured / Authorization required / Error / Connected | ✅ | Verified against real Google token endpoint rejection and Sameday mock |
 | Google Merchant API (products v1): auth, insert/upsert, delete, stale variant removal, price/availability, GTIN/identifier_exists, item group, data source creation, item-level issues | 🟡🟠 | Needs service account + Merchant Center account (verification/claim by Google) |
 | Google Analytics 4 (gtag + Consent Mode + Measurement Protocol purchase) | 🟡 | Needs Measurement ID / API secret |
@@ -101,9 +105,9 @@
 | --- | --- |
 | Typecheck (backend, admin, storefront) | ✅ |
 | ESLint (storefront) | ✅ |
-| Backend unit tests (26) | ✅ |
-| Backend HTTP integration tests (11) | ✅ |
-| Storefront unit tests (13) | ✅ |
+| Backend unit tests (46) | ✅ |
+| Backend HTTP integration tests (12) | ✅ |
+| Storefront unit tests (34) | ✅ |
 | Playwright E2E: catalog, SEO endpoints, legal pages, wishlist, COD checkout, account lifecycle, axe a11y, horizontal-overflow at 375–1920 px (desktop + mobile projects) | ✅ |
 | Backend production build (`medusa build`) | ✅ |
 | Storefront production build | ✅ |
@@ -117,4 +121,4 @@
 | Netopia / other Romanian card processors | ❌ | Stripe provided; others need a Medusa payment provider |
 | Search engine for very large catalogs | ❌ | In-process filtering is designed for boutique catalogs |
 | Invoicing (SmartBill/Oblio e-Factura) | ❌ | Not in scope of the specification; recommended for Romanian compliance |
-| Rate limiting on auth endpoints | ❌ | Use Vercel Firewall / Cloudflare rules in front of both apps |
+| Per-shopper IP protection at the edge | 🟡 | Account and backend-socket limits are implemented with Redis; configure a WAF for shopper IPs behind proxies |

@@ -10,7 +10,8 @@
 - `/store/customers/me/*` (wishlist) requires a customer token.
 - Customer JWT and cart id live in httpOnly, `SameSite=Lax`, `Secure` (production) cookies; `oh_auth` is a non-sensitive UI flag.
 - Account order pages check that the order belongs to the logged-in customer. The order confirmation page is reachable by its unguessable order ID (Medusa default for guest checkout).
-- Login redirect targets (`next`) are restricted to same-site relative paths.
+- Login redirect targets (`next`) reject protocol-relative URLs, backslashes and control characters; passwords are not silently trimmed.
+- Auth POST routes enforce shared Redis limits by normalized account and socket. Account keys are HMAC-hashed; a counter outage returns 503. In-memory counters are development-only. Use an edge WAF for per-shopper IP limits behind the storefront proxy.
 - Password reset responses don’t reveal whether an account exists.
 
 ## Webhooks & OAuth
@@ -23,7 +24,9 @@
 - All custom POST routes validate bodies with Zod (`src/api/validators.ts`); query parameters for locker search are validated and coerced.
 - Admin content updates are sanitized against the default content shape (unknown keys dropped, types enforced, lengths capped).
 - Markdown pages escape raw HTML before rendering; JSON-LD escapes `<`.
-- Server actions validate e-mail, phone and address fields and cap lengths.
+- Server actions validate e-mail, phone, county and address fields and cap lengths; checkout stores terms acceptance and refreshes consent before payment.
+- Easybox shipping selections are checked against the current courier locker cache; names and addresses come from that record.
+- `/checkout/return` never trusts Stripe URL status parameters: Medusa verifies authorization when completing the cart. Live Stripe redirect/3DS testing still requires keys.
 
 ## Headers
 - `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, HSTS, `Permissions-Policy`, CSP `frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'`.

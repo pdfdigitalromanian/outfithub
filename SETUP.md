@@ -1,7 +1,8 @@
 # OutfitHub – setup checklist
 
-Everything in the code is implemented; what remains is creating accounts,
-entering credentials and pointing domains. Work top to bottom. Items marked
+The core customer journey and provider adapters are implemented. Live provider
+validation, merchant approvals and the limitations in IMPLEMENTATION_STATUS.md
+still need attention. Work top to bottom. Items marked
 **(optional)** can be skipped for launch.
 
 Legend: `backend env` = environment variables of the Medusa server (and worker);
@@ -11,15 +12,15 @@ Legend: `backend env` = environment variables of the Medusa server (and worker);
 
 ## 1. Local run (15 minutes)
 
-- [ ] Install Node.js 22 LTS and Docker Desktop.
+- [ ] Install Node.js 24 LTS (`nvm use`, minimum 24.15.0) and Docker Desktop.
 - [ ] `docker compose up -d` (Postgres 16 + Redis 7 from `docker-compose.yml`).
-- [ ] `npm run install:all`
+- [ ] `npm install` (installs both apps via the root postinstall script)
 - [ ] `cp apps/backend/.env.example apps/backend/.env` and fill:
   - [ ] `JWT_SECRET`, `COOKIE_SECRET`, `INTEGRATIONS_ENCRYPTION_KEY` → run `openssl rand -hex 32` three times.
 - [ ] `npm run setup:db` → runs migrations + seed. **Copy the printed publishable key.**
-- [ ] `cd apps/backend && npx medusa user -e you@example.com -p <strong-password>` (admin login).
+- [ ] `(cd apps/backend && npx medusa user -e you@example.com -p 'replace-with-a-strong-password')` (admin login).
 - [ ] `cp apps/storefront/.env.example apps/storefront/.env.local`, set `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` to the printed key.
-- [ ] `npm run dev:backend` (admin: http://localhost:9000/app) and `npm run dev:storefront` (http://localhost:3000).
+- [ ] `npm run dev` starts both apps and prints their URLs (defaults: admin http://localhost:9000/app, storefront http://localhost:3000).
 - [ ] Place a test order with “Plata la livrare”.
 
 ## 2. Database – Supabase
@@ -40,6 +41,7 @@ Legend: `backend env` = environment variables of the Medusa server (and worker);
 
 - [ ] Create a Redis database (Upstash: https://console.upstash.com → **Create database**, region eu-central-1; or Railway/Redis Cloud).
 - [ ] Backend env: `REDIS_URL=rediss://default:<password>@<host>:6379`.
+- [ ] Verify Redis connectivity before opening the shop: authentication fails closed if its shared rate limiter is unavailable. Limits are 20 attempts/account/15 minutes and 300 requests/backend socket/minute. Add a WAF for per-shopper IP limits; do not trust arbitrary forwarding headers.
 
 ## 5. Deploy the Medusa backend
 
@@ -129,6 +131,9 @@ Any Node host works (Railway, Render, Fly.io, a VPS with Docker). `apps/backend/
 
 - [ ] Admin → **Integrations**: every enabled integration shows **Connected**.
 - [ ] Place a real order with each delivery method; generate an AWB and download the label.
+- [ ] Stripe: test successful payment, declined payment, 3DS and a redirect payment return to `/checkout/return`. The backend must confirm payment before an order is shown.
+- [ ] Meta: confirm a queued catalog batch advances from Processing to Synced (or Error); submitting a batch alone is not confirmation.
+- [ ] Run `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:integration`, `npm run test:e2e`, and `npm run build` in the deployment environment. For local HTTP tests use `DB_HOST=localhost` (the Medusa test helper forces SSL for `127.0.0.1`).
 - [ ] Google Search Console → add property → submit `https://www.outfithub.ro/sitemap.xml`.
 - [ ] Test the cookie banner (reject → no GA/Meta/TikTok requests in DevTools Network).
 - [ ] Install the site on a phone (Add to Home Screen).

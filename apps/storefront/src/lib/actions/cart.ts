@@ -1,5 +1,7 @@
 "use server"
 
+import { validEmail } from "../util/account-validation"
+import { validCheckoutAddress } from "../util/checkout-validation"
 import type { HttpTypes } from "@medusajs/types"
 import { headers as nextHeaders } from "next/headers"
 import { sdk } from "../medusa"
@@ -30,6 +32,7 @@ export async function getCartAction(): Promise<CartResult> {
 }
 
 export async function addToCartAction(variantId: string, quantity = 1): Promise<CartResult> {
+  if (!variantId || !Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) return { cart: await retrieveCart(), error: "Alege o cantitate între 1 și 99." }
   try {
     const cart = await ensureCart()
     await sdk.store.cart.createLineItem(cart.id, { variant_id: variantId, quantity }, {}, await getAuthHeaders())
@@ -103,8 +106,9 @@ export async function updateCheckoutDetailsAction(input: {
 }): Promise<CartResult> {
   const cartId = await getCartId()
   if (!cartId) return { cart: null, error: "Coșul a expirat." }
-  const email = input.email.trim().toLowerCase()
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { cart: await retrieveCart(cartId), error: "Adresa de e-mail nu este validă." }
+  const email = typeof input?.email === "string" ? input.email.trim().toLowerCase() : ""
+  if (!validEmail(email)) return { cart: await retrieveCart(cartId), error: "Adresa de e-mail nu este validă." }
+  if (!validCheckoutAddress(input.shipping) || (input.billing && !validCheckoutAddress(input.billing))) return { cart: await retrieveCart(cartId), error: "Verifică numele, adresa și telefonul de livrare / facturare." }
   const clean = (a: AddressInput) => ({
     first_name: a.first_name.trim().slice(0, 100),
     last_name: a.last_name.trim().slice(0, 100),
@@ -113,7 +117,7 @@ export async function updateCheckoutDetailsAction(input: {
     address_2: (a.address_2 ?? "").trim().slice(0, 200),
     city: a.city.trim().slice(0, 100),
     province: a.province.trim().slice(0, 100),
-    postal_code: a.postal_code.trim().slice(0, 12),
+    postal_code: (a.postal_code ?? "").trim().slice(0, 12),
     company: (a.company ?? "").trim().slice(0, 150),
     country_code: "ro",
   })
@@ -171,9 +175,32 @@ export async function initiatePaymentAction(providerId: string): Promise<CartRes
   }
 }
 
+/** Persist the final consent snapshot before a payment provider redirects away. */
+export async function prepareOrderAction(acceptedTerms: boolean, tracking: TrackingContext): Promise<{ error?: string }> {
+  if (acceptedTerms !== true) return { error: "Acceptă termenii și condițiile pentru a continua." }
+  const cart = await retrieveCart()
+  if (!cart?.items?.length || !cart.shipping_methods?.length) return { error: "Verifică produsele și livrarea înainte de plată." }
+  const h = await nextHeaders()
+  const finalTracking = {
+    ...tracking,
+    ip: (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || undefined,
+    user_agent: h.get("user-agent") ?? undefined,
+  }
+  try {
+    await sdk.store.cart.update(cart.id, {
+      metadata: { ...cart.metadata, terms_accepted_at: new Date().toISOString(), terms_version: "1", tracking: finalTracking },
+    }, {}, await getAuthHeaders())
+    return {}
+  } catch {
+    return { error: "Nu am putut salva confirmarea. Încearcă din nou." }
+  }
+}
+
 export async function placeOrderAction(): Promise<{ orderId?: string; error?: string; cart?: HttpTypes.StoreCart | null }> {
   const cartId = await getCartId()
   if (!cartId) return { error: "Coșul a expirat." }
+  const current = await retrieveCart(cartId)
+  if (!current?.metadata?.terms_accepted_at) return { error: "Acceptă termenii și condițiile înainte de a plasa comanda." }
   try {
     const res = await sdk.store.cart.complete(cartId, {}, await getAuthHeaders())
     if (res.type === "order") {

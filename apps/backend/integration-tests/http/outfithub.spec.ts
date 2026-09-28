@@ -2,7 +2,7 @@ import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createApiKeysWorkflow, linkSalesChannelsToApiKeyWorkflow, createSalesChannelsWorkflow } from "@medusajs/medusa/core-flows"
 
-jest.setTimeout(120 * 1000)
+jest.setTimeout(Number(process.env.INTEGRATION_TEST_TIMEOUT_MS) || 120 * 1000)
 
 medusaIntegrationTestRunner({
   inApp: true,
@@ -34,6 +34,19 @@ medusaIntegrationTestRunner({
       )
       adminHeaders = { authorization: `Bearer ${jwt}` }
       void container.resolve(ContainerRegistrationKeys.LOGGER)
+    })
+
+    describe("authentication limits", () => {
+      it("limits repeated attempts for the same normalized account", async () => {
+        const email = `rate-${Date.now()}@example.com`
+        for (let i = 0; i < 20; i++) {
+          const result = await api.post("/auth/customer/emailpass", { email, password: "wrong-password" }).catch((e) => e.response)
+          expect(result.status).toBe(401)
+        }
+        const blocked = await api.post("/auth/customer/emailpass", { email: email.toUpperCase(), password: "wrong-password" }).catch((e) => e.response)
+        expect(blocked.status).toBe(429)
+        expect(Number(blocked.headers["retry-after"])).toBeGreaterThan(0)
+      })
     })
 
     describe("store content", () => {

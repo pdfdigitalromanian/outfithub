@@ -9,6 +9,7 @@ import type { HttpTypes } from "@medusajs/types"
 import {
   initiatePaymentAction,
   placeOrderAction,
+  prepareOrderAction,
   setShippingMethodAction,
   updateCheckoutDetailsAction,
   type AddressInput,
@@ -201,7 +202,7 @@ export function CheckoutClient({
     track("add_shipping_info", { value: res.cart?.total ?? 0, currency: res.cart?.currency_code, shipping_tier: opt.name })
   }
 
-  const deliveryValid = hasShipping && (!shippingOptions.find((o) => o.id === currentMethod?.shipping_option_id && isEasybox(o)) || !!(currentMethod?.data as any)?.locker_id)
+  const deliveryValid = hasShipping && selectedOption === currentMethod?.shipping_option_id && !error && (!shippingOptions.find((o) => o.id === currentMethod?.shipping_option_id && isEasybox(o)) || !!(currentMethod?.data as any)?.locker_id)
 
   /* -------------------------------------------------- step 3: payment */
   const activeSession = cart.payment_collection?.payment_sessions?.[0]
@@ -238,6 +239,8 @@ export function CheckoutClient({
       return
     }
     setBusy(true)
+    const prepared = await prepareOrderAction(terms, trackingContext())
+    if (prepared.error) { setBusy(false); return setError(prepared.error) }
     if (provider.startsWith("pp_stripe")) {
       const ok = await stripeRef.current?.confirm()
       if (!ok?.ok) {
@@ -271,6 +274,22 @@ export function CheckoutClient({
             </div>
           )}
 
+          {!customer && (
+            <section aria-labelledby="guest-checkout-title" className="mb-6 rounded-lg border border-line bg-paper-2 px-5 py-4">
+              <h2 id="guest-checkout-title" className="text-base font-medium">Comandă fără cont</h2>
+              <p className="mt-1 text-sm text-muted">
+                Completează datele de contact și adresa, apoi alege livrarea și plata. Nu ai nevoie de cont sau parolă.
+              </p>
+              <p className="mt-3 text-sm text-muted">
+                Ai deja cont?{" "}
+                <Link href="/account/login?next=/checkout" className="font-medium text-ink underline underline-offset-2">
+                  Autentifică-te
+                </Link>{" "}
+                pentru a folosi adresele salvate (opțional).
+              </p>
+            </section>
+          )}
+
           {/* STEP 1 */}
           <StepCard n={1} title="Date de livrare" active={step === "details"} done={hasDetails && step !== "details"} onEdit={() => setStep("details")}
             summary={sa?.address_1 ? (
@@ -286,15 +305,6 @@ export function CheckoutClient({
           >
             <form onSubmit={submitDetails} noValidate className="flex flex-col gap-4">
               <Field label="E-mail" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} hint="Aici primești confirmarea și AWB-ul." />
-              {!customer && (
-                <p className="text-xs text-muted">
-                  Ai cont?{" "}
-                  <Link href="/account/login?next=/checkout" className="underline underline-offset-2">
-                    Autentifică-te
-                  </Link>{" "}
-                  pentru adrese salvate.
-                </p>
-              )}
               <AddressFields value={address} onChange={setAddress} errors={errors} prefix="" />
               <Checkbox label="Adresa de facturare este aceeași" checked={billingSame} onChange={(e) => setBillingSame(e.target.checked)} />
               {!billingSame && (

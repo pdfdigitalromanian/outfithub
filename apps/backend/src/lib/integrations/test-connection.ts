@@ -1,3 +1,4 @@
+import { redactSecrets } from "./redact"
 import type { MedusaContainer } from "@medusajs/framework/types"
 import { INTEGRATIONS_MODULE } from "../../modules/integrations"
 import type IntegrationsModuleService from "../../modules/integrations/service"
@@ -28,7 +29,7 @@ export async function testIntegration(container: MedusaContainer, provider: Inte
 
   let result: TestResult
   if (missing.length) {
-    result = { status: "not_configured", message: `Missing: ${missing.join(", ")}` }
+    result = { status: "not_configured", message: `Câmpuri lipsă: ${missing.join(", ")}` }
   } else {
     try {
       result = await runTest(container, provider, c, s)
@@ -37,8 +38,9 @@ export async function testIntegration(container: MedusaContainer, provider: Inte
       result = { status: err.connectionStatus, message: err.message }
     }
   }
+  result.message = redactSecrets(result.message, s)
   await svc.setStatus(provider, result.status, result.message)
-  await svc.log(provider, result.status === "connected" ? "info" : "warn", `Connection test: ${result.status} – ${result.message}`)
+  await svc.log(provider, result.status === "connected" ? "info" : "warn", `Test de conexiune: ${result.message}`)
   return result
 }
 
@@ -61,20 +63,20 @@ async function runTest(
       if (!ds) {
         return {
           status: "error",
-          message: `Connected to “${account.accountName}”, but data source ${c.data_source_id} was not found. Use “Create API data source”.`,
+          message: `Conectat la „${account.accountName}”, dar sursa de date ${c.data_source_id} nu a fost găsită. Folosește „Creează sursă de date API”.`,
           details: { data_sources: sources.dataSources ?? [] },
         }
       }
-      return { status: "connected", message: `Connected to “${account.accountName}” – data source “${ds.displayName}”.` }
+      return { status: "connected", message: `Conectat la „${account.accountName}” – sursa de date „${ds.displayName}”.` }
     }
     case "google_analytics": {
       if (!/^G-[A-Z0-9]+$/.test(String(c.measurement_id))) {
-        return { status: "error", message: "Measurement ID must look like G-XXXXXXXXXX" }
+        return { status: "error", message: "ID-ul de măsurare trebuie să aibă forma G-XXXXXXXXXX" }
       }
       if (!s.api_secret) {
         return {
           status: "connected",
-          message: "Browser tag configured. Add a Measurement Protocol API secret to also send server-side purchases.",
+          message: "Eticheta din browser este configurată. Adaugă secretul API Measurement Protocol pentru evenimentele de cumpărare de pe server.",
         }
       }
       const url = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${encodeURIComponent(c.measurement_id)}&api_secret=${encodeURIComponent(s.api_secret)}`
@@ -88,7 +90,7 @@ async function runTest(
       }
       return {
         status: "connected",
-        message: "Measurement Protocol payload validated. Google does not verify API secrets via the debug endpoint; confirm events in GA4 Realtime.",
+        message: "Datele Measurement Protocol sunt valide. Google nu verifică secretul API prin acest endpoint; confirmă evenimentele în GA4 Realtime.",
       }
     }
     case "meta": {
@@ -102,9 +104,9 @@ async function runTest(
       const parts = [`Pixel “${pixel.name}”`]
       if (c.catalog_id) {
         const catalog = await client.getCatalog()
-        parts.push(`catalog “${catalog.name}” (${catalog.product_count ?? 0} items)`)
+        parts.push(`catalog “${catalog.name}” (${catalog.product_count ?? 0} produse)`)
       } else {
-        parts.push("no catalog configured (catalog sync disabled)")
+        parts.push("niciun catalog configurat (sincronizare dezactivată)")
       }
       return { status: "connected", message: parts.join(", ") }
     }
@@ -116,18 +118,18 @@ async function runTest(
       })
       const data = await client.listPixels()
       const pixel = data.pixels?.find((p) => p.pixel_code === c.pixel_code)
-      if (!pixel) return { status: "error", message: `Pixel ${c.pixel_code} not found for advertiser ${c.advertiser_id}` }
-      return { status: "connected", message: `Pixel “${pixel.pixel_name}” reachable.` }
+      if (!pixel) return { status: "error", message: `Pixelul ${c.pixel_code} nu a fost găsit pentru contul ${c.advertiser_id}` }
+      return { status: "connected", message: `Pixelul „${pixel.pixel_name}” este accesibil.` }
     }
     case "tiktok_shop": {
       if (!s.access_token) {
-        return { status: "authorization_required", message: "Authorize your TikTok Shop seller account." }
+        return { status: "authorization_required", message: "Autorizează contul de vânzător TikTok Shop." }
       }
       const client = await getTikTokShopClient(container)
       const shops = await client.getAuthorizedShops()
       const svc = container.resolve<IntegrationsModuleService>(INTEGRATIONS_MODULE)
       const shop = shops.shops?.[0]
-      if (!shop) return { status: "authorization_required", message: "No shop is authorized for this app." }
+      if (!shop) return { status: "authorization_required", message: "Niciun magazin nu este autorizat pentru această aplicație." }
       await svc.setConfigValues("tiktok_shop", { shop_cipher: shop.cipher, shop_id: shop.id, shop_name: shop.name, shop_region: shop.region })
       if (!c.warehouse_id) {
         const authed = await getTikTokShopClient(container)
@@ -135,7 +137,7 @@ async function runTest(
         const def = wh?.warehouses?.find((w) => w.is_default) ?? wh?.warehouses?.[0]
         if (def) await svc.setConfigValues("tiktok_shop", { warehouse_id: def.id })
       }
-      return { status: "connected", message: `Shop “${shop.name}” (${shop.region}) authorized.` }
+      return { status: "connected", message: `Magazinul „${shop.name}” (${shop.region}) este autorizat.` }
     }
     case "sameday": {
       const client = await getSamedayClient(container)
@@ -159,7 +161,7 @@ async function runTest(
       if (Object.keys(patch).length) await svc.setConfigValues("sameday", patch)
       return {
         status: "connected",
-        message: `Authenticated. ${services.length} services, ${pickupPoints.length} pickup point(s) available.`,
+        message: `Autentificare reușită. ${services.length} servicii și ${pickupPoints.length} puncte de ridicare disponibile.`,
         details: {
           services: services.map((sv) => ({ id: sv.id, name: sv.name, code: sv.serviceCode })),
           pickup_points: pickupPoints.map((p) => ({

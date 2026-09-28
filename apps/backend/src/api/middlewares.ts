@@ -1,3 +1,5 @@
+import { validateLockerSelection } from "../lib/shipping/validate-locker"
+import { authRateLimit } from "../lib/security/rate-limit"
 import {
   allowFields,
   defineMiddlewares,
@@ -17,6 +19,8 @@ import {
 
 export default defineMiddlewares({
   routes: [
+    { matcher: /^\/store\/carts\/[^/]+\/shipping-methods\/?$/, method: ["POST"], middlewares: [validateLockerSelection] },
+    { matcher: /^\/auth(?:\/|$)/, method: ["POST"], middlewares: [authRateLimit()] },
     {
       // Storefront listings/PDP need category membership and the option title
       // of each variant option value (for color/size pickers and filters).

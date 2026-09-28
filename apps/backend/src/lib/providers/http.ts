@@ -1,3 +1,4 @@
+import { redactSecrets } from "../integrations/redact"
 export type ProviderErrorKind =
   | "not_configured"
   | "authentication"
@@ -55,30 +56,36 @@ export async function requestJson<T = any>(
   init: RequestInit & { timeoutMs?: number; fetchImpl?: FetchLike } = {}
 ): Promise<T> {
   const { timeoutMs = 20000, fetchImpl = fetch, ...rest } = init
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
-  let res: Response
+  const requestSecrets: Record<string, unknown> = {}
+  const headers = new Headers(rest.headers)
+  for (const key of ["authorization", "access-token", "x-tts-access-token", "x-auth-token"]) {
+    const value = headers.get(key)
+    if (value) requestSecrets[key] = value.replace(/^Bearer\s+/i, "")
+  }
+  const parsedUrl = new URL(url)
+  for (const key of ["access_token", "client_secret", "api_secret", "refresh_token"]) {
+    const value = parsedUrl.searchParams.get(key)
+    if (value) requestSecrets[key] = value
+  }
+  // Keep the deadline alive through body consumption, not just response headers.
+  const timeout = AbortSignal.timeout(timeoutMs)
+  const signal = rest.signal ? AbortSignal.any([rest.signal, timeout]) : timeout
   try {
-    res = await fetchImpl(url, { ...rest, signal: controller.signal })
-  } catch (e) {
-    throw new ProviderError(provider, "network", `Network error calling ${provider}: ${(e as Error).message}`)
-  } finally {
-    clearTimeout(timer)
-  }
-  const text = await res.text()
-  let body: any = null
-  if (text) {
-    try {
-      body = JSON.parse(text)
-    } catch {
-      body = text
+    const res = await fetchImpl(url, { ...rest, signal })
+    const text = await res.text()
+    let body: any = null
+    if (text) {
+      try { body = JSON.parse(text) } catch { body = text }
     }
+    if (!res.ok) {
+      const message = redactSecrets(extractMessage(body) || `${provider} responded with HTTP ${res.status}`, requestSecrets)
+      throw new ProviderError(provider, kindFromStatus(res.status), message, res.status, body)
+    }
+    return body as T
+  } catch (e) {
+    if (e instanceof ProviderError) throw e
+    throw new ProviderError(provider, "network", `Network error calling ${provider}: ${(e as Error).message}`)
   }
-  if (!res.ok) {
-    const message = extractMessage(body) || `${provider} responded with HTTP ${res.status}`
-    throw new ProviderError(provider, kindFromStatus(res.status), message, res.status, body)
-  }
-  return body as T
 }
 
 function extractMessage(body: any): string | null {

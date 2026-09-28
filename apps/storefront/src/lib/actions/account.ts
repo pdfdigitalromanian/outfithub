@@ -1,6 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation"
+import { safeReturnPath, validEmail, validPassword } from "../util/account-validation"
 import { sdk } from "../medusa"
 import { getAuthHeaders, getCartId, removeAuthToken, setAuthToken } from "../util/cookies"
 import type { AddressInput } from "./cart"
@@ -17,9 +18,9 @@ async function transferCart() {
 
 export async function loginAction(_: FormState, fd: FormData): Promise<FormState> {
   const email = str(fd, "email").toLowerCase()
-  const password = str(fd, "password")
+  const password = String(fd.get("password") ?? "")
   const fields = { email }
-  if (!email || !password) return { error: "Completează e-mailul și parola.", fields }
+  if (!validEmail(email) || !password || password.length > 128) return { error: "Completează e-mailul și parola.", fields }
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
     if (typeof token !== "string") return { error: "Autentificarea necesită un pas suplimentar care nu este suportat.", fields }
@@ -29,17 +30,17 @@ export async function loginAction(_: FormState, fd: FormData): Promise<FormState
     return { error: "E-mail sau parolă incorecte.", fields }
   }
   const next = str(fd, "next")
-  redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/account")
+  redirect(safeReturnPath(next))
 }
 
 export async function registerAction(_: FormState, fd: FormData): Promise<FormState> {
   const email = str(fd, "email").toLowerCase()
-  const password = str(fd, "password")
+  const password = String(fd.get("password") ?? "")
   const first_name = str(fd, "first_name")
   const last_name = str(fd, "last_name")
   const fields = { email, first_name, last_name }
-  if (!email || !first_name || !last_name) return { error: "Completează toate câmpurile obligatorii.", fields }
-  if (password.length < 8) return { error: "Parola trebuie să aibă cel puțin 8 caractere.", fields }
+  if (!validEmail(email) || !first_name || !last_name || first_name.length > 100 || last_name.length > 100) return { error: "Completează toate câmpurile obligatorii.", fields }
+  if (!validPassword(password)) return { error: "Parola trebuie să aibă între 8 și 128 de caractere.", fields }
   if (fd.get("terms") !== "on") return { error: "Trebuie să accepți termenii și condițiile.", fields }
   try {
     const regToken = await sdk.auth.register("customer", "emailpass", { email, password })
@@ -62,7 +63,7 @@ export async function logoutAction() {
 
 export async function requestPasswordResetAction(_: FormState, fd: FormData): Promise<FormState> {
   const email = str(fd, "email").toLowerCase()
-  if (!email) return { error: "Introdu adresa de e-mail." }
+  if (!validEmail(email)) return { error: "Introdu adresa de e-mail." }
   await sdk.auth.resetPassword("customer", "emailpass", { identifier: email }).catch(() => null)
   // Same answer whether or not the account exists (no account enumeration).
   return { success: "Dacă există un cont pentru această adresă, vei primi un e-mail cu instrucțiuni." }
@@ -70,8 +71,8 @@ export async function requestPasswordResetAction(_: FormState, fd: FormData): Pr
 
 export async function resetPasswordAction(_: FormState, fd: FormData): Promise<FormState> {
   const token = str(fd, "token")
-  const password = str(fd, "password")
-  if (password.length < 8) return { error: "Parola trebuie să aibă cel puțin 8 caractere." }
+  const password = String(fd.get("password") ?? "")
+  if (!validPassword(password)) return { error: "Parola trebuie să aibă între 8 și 128 de caractere." }
   try {
     await sdk.auth.updateProvider("customer", "emailpass", { password }, token)
   } catch {

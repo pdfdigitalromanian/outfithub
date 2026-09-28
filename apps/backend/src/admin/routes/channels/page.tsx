@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { api } from "../../lib/sdk"
 import type { ChannelSync, ConnectionStatus } from "../../lib/types"
-import { ConnectionBadge, PROVIDER_LABELS, SyncBadge, formatDate } from "../../components/status"
+import { ConnectionBadge, PROVIDER_LABELS, SyncBadge, syncLabel, formatDate } from "../../components/status"
 
 type Summary = Record<
   string,
@@ -50,7 +50,7 @@ const ChannelsPage = () => {
   const trigger = useMutation({
     mutationFn: (body: Record<string, unknown>) => api<{ queued: number }>("/admin/channels/sync", { method: "POST", body }),
     onSuccess: (res) => {
-      toast.success(`${res.queued} product(s) queued`)
+      toast.success(`${res.queued} produse adăugate în coadă`)
       qc.invalidateQueries({ queryKey: ["channel-syncs"] })
       qc.invalidateQueries({ queryKey: ["channel-summary"] })
     },
@@ -58,29 +58,28 @@ const ChannelsPage = () => {
   })
 
   return (
-    <div className="flex flex-col gap-y-3">
-      <Container className="flex items-center justify-between px-6 py-4">
+    <div className="oh-admin flex flex-col gap-y-3">
+      <Container className="flex flex-wrap items-center justify-between gap-y-3 px-6 py-4">
         <div>
-          <Heading level="h1">Channel sync</Heading>
+          <Heading level="h1">Sincronizare canale</Heading>
           <Text size="small" className="text-ui-fg-subtle mt-1">
-            Product synchronization with Google Merchant Center, Meta catalog and TikTok Shop. Each channel runs
-            independently; failures are retried automatically with back-off.
+            Sincronizează produsele cu Google Merchant Center, catalogul Meta și TikTok Shop. Canalele funcționează independent, iar erorile sunt reîncercate automat.
           </Text>
         </div>
-        <div className="flex gap-2">
+        <div className="oh-actions flex gap-2">
           <Button variant="secondary" size="small" isLoading={trigger.isPending} onClick={() => trigger.mutate({ scope: "failed" })}>
-            Retry failed
+            Reîncearcă erorile
           </Button>
           <Button size="small" isLoading={trigger.isPending} onClick={() => trigger.mutate({ scope: "all" })}>
-            Resync catalog
+            Resincronizează catalogul
           </Button>
         </div>
       </Container>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-3">
         {Object.entries(summary.data?.summary ?? {}).map(([key, s]) => (
           <Container key={key} className="px-6 py-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-y-3">
               <Text weight="plus">{s.name}</Text>
               <ConnectionBadge status={s.status} />
             </div>
@@ -88,12 +87,12 @@ const ChannelsPage = () => {
               {(["synced", "pending", "error"] as const).map((k) => (
                 <div key={k}>
                   <Text size="xlarge" weight="plus">{s.counts[k] ?? 0}</Text>
-                  <Text size="xsmall" className="text-ui-fg-muted capitalize">{k}</Text>
+                  <Text size="xsmall" className="text-ui-fg-muted capitalize">{syncLabel(k)}</Text>
                 </div>
               ))}
             </div>
             <Text size="xsmall" className="text-ui-fg-muted mt-2">
-              {s.enabled ? `Last sync: ${formatDate(s.last_synced_at)}` : "Disabled – enable in Integrations"}
+              {s.enabled ? `Ultima sincronizare: ${formatDate(s.last_synced_at)}` : "Dezactivat – activează din Integrări"}
             </Text>
             {s.status !== "connected" && s.status_message && (
               <Text size="xsmall" className="text-ui-fg-error mt-1">{s.status_message}</Text>
@@ -102,12 +101,12 @@ const ChannelsPage = () => {
         ))}
       </div>
 
-      <Container className="divide-y p-0">
+      <Container className="oh-admin divide-y p-0">
         <div className="flex flex-wrap items-center gap-2 px-6 py-4">
           <Select value={provider} onValueChange={(v) => { setProvider(v); setOffset(0) }}>
             <Select.Trigger className="w-48"><Select.Value /></Select.Trigger>
             <Select.Content>
-              <Select.Item value="all">All channels</Select.Item>
+              <Select.Item value="all">Toate canalele</Select.Item>
               <Select.Item value="google_merchant">Google Merchant</Select.Item>
               <Select.Item value="meta">Meta</Select.Item>
               <Select.Item value="tiktok_shop">TikTok Shop</Select.Item>
@@ -117,19 +116,20 @@ const ChannelsPage = () => {
             <Select.Trigger className="w-40"><Select.Value /></Select.Trigger>
             <Select.Content>
               {["all", "synced", "pending", "processing", "error", "skipped", "removed"].map((s) => (
-                <Select.Item key={s} value={s}>{s === "all" ? "All statuses" : s}</Select.Item>
+                <Select.Item key={s} value={s}>{s === "all" ? "Toate stările" : syncLabel(s)}</Select.Item>
               ))}
             </Select.Content>
           </Select>
         </div>
+        <div className="oh-table-scroll" role="region" aria-label="Tabel cu derulare orizontală" tabIndex={0}>
         <Table>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Product</Table.HeaderCell>
-              <Table.HeaderCell>Channel</Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-              <Table.HeaderCell>Details</Table.HeaderCell>
-              <Table.HeaderCell>Last sync</Table.HeaderCell>
+              <Table.HeaderCell>Produs</Table.HeaderCell>
+              <Table.HeaderCell>Canal</Table.HeaderCell>
+              <Table.HeaderCell>Stare</Table.HeaderCell>
+              <Table.HeaderCell>Detalii</Table.HeaderCell>
+              <Table.HeaderCell>Ultima sincronizare</Table.HeaderCell>
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
@@ -147,7 +147,7 @@ const ChannelsPage = () => {
                       (r.issues?.length ? r.issues.map((i) => i.message).join(" ") : r.external_id ? `ID: ${r.external_id}` : "—")}
                   </Text>
                   {r.next_attempt_at && r.status === "error" && (
-                    <Text size="xsmall" className="text-ui-fg-muted">Next retry {formatDate(r.next_attempt_at)} (attempt {r.attempts})</Text>
+                    <Text size="xsmall" className="text-ui-fg-muted">Următoarea încercare: {formatDate(r.next_attempt_at)} (încercarea {r.attempts})</Text>
                   )}
                 </Table.Cell>
                 <Table.Cell>{formatDate(r.last_synced_at)}</Table.Cell>
@@ -157,19 +157,21 @@ const ChannelsPage = () => {
                     variant="transparent"
                     onClick={() => trigger.mutate({ scope: "products", product_ids: [r.product_id], providers: [r.provider] })}
                   >
-                    Sync now
+                    Sincronizează acum
                   </Button>
                 </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
+        </div>
         {!rows.data?.syncs?.length && (
           <div className="px-6 py-8 text-center">
-            <Text className="text-ui-fg-subtle">No synchronization records yet. Enable a channel in Integrations, then publish or update a product.</Text>
+            <Text className="text-ui-fg-subtle">Nu există încă sincronizări. Activează un canal în Integrări, apoi publică sau actualizează un produs.</Text>
           </div>
         )}
-        <Table.Pagination
+        <Table.Pagination className="oh-pagination"
+          translations={{ of: "din", results: "rezultate", pages: "pagini", prev: "Înapoi", next: "Înainte" }}
           count={rows.data?.count ?? 0}
           pageSize={PAGE}
           pageIndex={offset / PAGE}
@@ -185,7 +187,7 @@ const ChannelsPage = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Channel sync",
+  label: "Sincronizare canale",
   icon: ArrowPath,
   rank: 4,
 })

@@ -40,7 +40,7 @@ const Inner = forwardRef<StripeHandle, { email: string }>(function Inner({ email
       const { error } = await stripe.confirmPayment({
         elements,
         redirect: "if_required",
-        confirmParams: { return_url: `${location.origin}/checkout`, payment_method_data: { billing_details: { email } } },
+        confirmParams: { return_url: `${location.origin}/checkout/return`, payment_method_data: { billing_details: { email } } },
       })
       return error ? { ok: false, error: error.message } : { ok: true }
     },

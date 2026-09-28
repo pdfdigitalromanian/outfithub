@@ -20,10 +20,10 @@ import type { Integration, IntegrationField } from "../../lib/types"
 import { ConnectionBadge, formatDate } from "../../components/status"
 
 const CATEGORY_LABELS: Record<string, string> = {
-  sales_channel: "Sales channels",
-  tracking: "Tracking & pixels",
-  analytics: "Analytics",
-  shipping: "Shipping",
+  sales_channel: "Canale de vânzare",
+  tracking: "Urmărire și pixeli",
+  analytics: "Analiză trafic",
+  shipping: "Livrare",
 }
 
 const IntegrationsPage = () => {
@@ -36,8 +36,8 @@ const IntegrationsPage = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const tiktok = params.get("tiktok")
-    if (tiktok === "connected") toast.success("TikTok Shop authorized")
-    else if (tiktok) toast.error(`TikTok Shop authorization failed (${tiktok})`)
+    if (tiktok === "connected") toast.success("TikTok Shop a fost autorizat")
+    else if (tiktok) toast.error(`Autorizarea TikTok Shop a eșuat (${tiktok})`)
   }, [])
 
   const grouped = useMemo(() => {
@@ -49,28 +49,27 @@ const IntegrationsPage = () => {
   const current = data?.integrations.find((i) => i.provider === open) ?? null
 
   return (
-    <div className="flex flex-col gap-y-3">
+    <div className="oh-admin flex flex-col gap-y-3">
       <Container className="px-6 py-4">
-        <Heading level="h1">Integrations</Heading>
+        <Heading level="h1">Integrări</Heading>
         <Text size="small" className="text-ui-fg-subtle mt-1">
-          Connect sales channels, tracking and shipping. Credentials are encrypted at rest (AES-256-GCM) and never
-          sent back to the browser. Every connection is verified against the provider when saved.
+          Conectează canalele de vânzare, analiza traficului și livrarea. Datele de acces sunt păstrate în siguranță. Fiecare conexiune este verificată la salvare.
         </Text>
       </Container>
-      {isLoading && <Container className="px-6 py-4"><Text>Loading…</Text></Container>}
+      {isLoading && <Container className="px-6 py-4"><Text>Se încarcă…</Text></Container>}
       {Object.entries(grouped).map(([category, list]) => (
-        <Container key={category} className="divide-y p-0">
+        <Container key={category} className="oh-admin divide-y p-0">
           <div className="px-6 py-4">
             <Heading level="h2">{CATEGORY_LABELS[category] ?? category}</Heading>
           </div>
           {list.map((i) => (
-            <div key={i.provider} className="flex items-center justify-between gap-4 px-6 py-4">
+            <div key={i.provider} className="flex flex-wrap items-center justify-between gap-y-3 gap-4 px-6 py-4">
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Text weight="plus">{i.name}</Text>
                   <ConnectionBadge status={i.status} />
                   {!i.enabled && i.status !== "not_configured" && (
-                    <Text size="xsmall" className="text-ui-fg-muted">disabled</Text>
+                    <Text size="xsmall" className="text-ui-fg-muted">dezactivat</Text>
                   )}
                 </div>
                 <Text size="small" className="text-ui-fg-subtle mt-1 max-w-3xl">{i.description}</Text>
@@ -81,7 +80,7 @@ const IntegrationsPage = () => {
                 )}
               </div>
               <Button variant="secondary" size="small" onClick={() => setOpen(i.provider)}>
-                Configure
+                Configurează
               </Button>
             </div>
           ))}
@@ -107,7 +106,7 @@ const IntegrationDrawer = ({ integration, onClose }: { integration: Integration;
       setSecrets({})
       setDetails(res.test?.details ?? null)
       const status = res.test?.status
-      if (status === "connected") toast.success(`${integration.name}: connected`)
+      if (status === "connected") toast.success(`${integration.name}: conectat`)
       else toast.warning(`${integration.name}: ${res.test?.message ?? status}`)
       refresh()
     },
@@ -135,8 +134,8 @@ const IntegrationDrawer = ({ integration, onClose }: { integration: Integration;
       return api("/admin/sameday/lockers/sync", { method: "POST" })
     },
     onSuccess: (res: any) => {
-      if (res?.data_source) toast.success(`Data source ${res.data_source.dataSourceId} created`)
-      if (res?.result) toast.success(`Easybox list refreshed: ${res.result.total} lockers`)
+      if (res?.data_source) toast.success(`Sursa de date ${res.data_source.dataSourceId} a fost creată`)
+      if (res?.result) toast.success(`Lista Easybox a fost actualizată: ${res.result.total} locații`)
       refresh()
     },
     onError: (e: Error) => toast.error(e.message),
@@ -149,23 +148,23 @@ const IntegrationDrawer = ({ integration, onClose }: { integration: Integration;
 
   return (
     <Drawer open onOpenChange={(o) => !o && onClose()}>
-      <Drawer.Content className="max-w-xl">
+      <Drawer.Content className="oh-admin-drawer max-w-xl">
         <Drawer.Header>
           <Drawer.Title>{integration.name}</Drawer.Title>
           <Drawer.Description>
             <a className="text-ui-fg-interactive" href={integration.docs_url} target="_blank" rel="noreferrer">
-              Provider documentation ↗
+              Documentația furnizorului ↗
             </a>
           </Drawer.Description>
         </Drawer.Header>
         <Drawer.Body className="flex flex-col gap-y-4 overflow-y-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-y-3">
+            <div className="flex flex-wrap items-center gap-2">
               <ConnectionBadge status={integration.status} />
-              <Text size="xsmall" className="text-ui-fg-muted">Checked {formatDate(integration.last_checked_at)}</Text>
+              <Text size="xsmall" className="text-ui-fg-muted">Verificat: {formatDate(integration.last_checked_at)}</Text>
             </div>
-            <div className="flex items-center gap-2">
-              <Label htmlFor="enabled">Enabled</Label>
+            <div className="flex flex-wrap items-center gap-2">
+              <Label htmlFor="enabled">Activat</Label>
               <Switch id="enabled" checked={enabled} onCheckedChange={setEnabled} />
             </div>
           </div>
@@ -185,54 +184,54 @@ const IntegrationDrawer = ({ integration, onClose }: { integration: Integration;
           ))}
           {integration.provider === "tiktok_shop" && (
             <Text size="xsmall" className="text-ui-fg-subtle">
-              Redirect URL to register in TikTok Partner Center: <code>{window.location.origin}/integrations/tiktok-shop/callback</code>.
-              Webhook URL: <code>{window.location.origin}/webhooks/tiktok-shop</code>
+              URL de redirecționare de înregistrat în TikTok Partner Center: <code>{window.location.origin}/integrations/tiktok-shop/callback</code>.
+              URL webhook: <code>{window.location.origin}/webhooks/tiktok-shop</code>
             </Text>
           )}
           {integration.provider === "meta" && (
             <Text size="xsmall" className="text-ui-fg-subtle">
-              Webhook callback URL: <code>{window.location.origin}/webhooks/meta</code> (uses the verify token and app secret above).
+              URL de apel webhook: <code>{window.location.origin}/webhooks/meta</code> (folosește tokenul de verificare și secretul aplicației de mai sus).
             </Text>
           )}
           {details && (
             <div className="bg-ui-bg-subtle rounded-md p-3">
-              <Text size="xsmall" weight="plus">Details from provider</Text>
+              <Text size="xsmall" weight="plus">Detalii de la furnizor</Text>
               <pre className="mt-2 max-h-64 overflow-auto text-xs">{JSON.stringify(details, null, 2)}</pre>
             </div>
           )}
           <div>
-            <Text size="small" weight="plus" className="mb-2">Recent activity</Text>
+            <Text size="small" weight="plus" className="mb-2">Activitate recentă</Text>
             <div className="flex flex-col gap-y-1">
               {(logs.data?.logs ?? []).slice(0, 15).map((l) => (
                 <Text key={l.id} size="xsmall" className={l.level === "error" ? "text-ui-fg-error" : "text-ui-fg-subtle"}>
                   {formatDate(l.created_at)} · {l.message}
                 </Text>
               ))}
-              {!logs.data?.logs?.length && <Text size="xsmall" className="text-ui-fg-muted">No activity yet.</Text>}
+              {!logs.data?.logs?.length && <Text size="xsmall" className="text-ui-fg-muted">Nicio activitate deocamdată.</Text>}
             </div>
           </div>
         </Drawer.Body>
         <Drawer.Footer className="flex flex-wrap gap-2">
           {integration.provider === "tiktok_shop" && (
             <Button variant="secondary" isLoading={action.isPending} onClick={() => action.mutate("tiktok_authorize")}>
-              Authorize seller
+              Autorizează vânzătorul
             </Button>
           )}
           {integration.provider === "google_merchant" && (
             <Button variant="secondary" isLoading={action.isPending} onClick={() => action.mutate("google_datasource")}>
-              Create API data source
+              Creează sursă de date API
             </Button>
           )}
           {integration.provider === "sameday" && (
             <Button variant="secondary" isLoading={action.isPending} onClick={() => action.mutate("sameday_lockers")}>
-              Refresh Easybox list
+              Actualizează lista Easybox
             </Button>
           )}
           <Button variant="secondary" isLoading={test.isPending} onClick={() => test.mutate()}>
-            Test connection
+            Testează conexiunea
           </Button>
           <Button isLoading={save.isPending} onClick={() => save.mutate()}>
-            Save & verify
+            Salvează și verifică
           </Button>
         </Drawer.Footer>
       </Drawer.Content>
@@ -252,7 +251,7 @@ const FieldInput = ({
   onChange: (v: unknown) => void
 }) => {
   const id = `f-${field.key}`
-  const placeholder = field.secret && stored ? `Saved (${stored}) – leave empty to keep` : field.placeholder
+  const placeholder = field.secret && stored ? `Salvat (${stored}) – lasă gol pentru a păstra` : field.placeholder
   return (
     <div className="flex flex-col gap-y-1">
       <Label htmlFor={id} size="small">
@@ -289,7 +288,7 @@ const FieldInput = ({
 }
 
 export const config = defineRouteConfig({
-  label: "Integrations",
+  label: "Integrări",
   icon: Bolt,
   rank: 3,
 })

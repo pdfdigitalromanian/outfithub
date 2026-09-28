@@ -1,0 +1,20 @@
+/* Keep intrinsic table/form widths from stretching the admin shell. */
+main, main > div, .oh-admin, .oh-admin * { min-width: 0; }
+.oh-admin { overflow-wrap: anywhere; }
+.oh-table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.oh-table-scroll > table { min-width: 680px; }
+.oh-table-scroll:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+.oh-admin-drawer { overflow-wrap: anywhere; }
+.oh-admin-drawer pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 767px) {
+  /* Native Medusa dialogs and drawers must fit the visible phone viewport. */
+  [role="dialog"] { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); }
+  .oh-admin-drawer { width: calc(100vw - 16px); }
+  .oh-admin-drawer footer { flex-wrap: wrap; }
+  .oh-admin-drawer button { white-space: normal; }
+  .oh-admin .oh-actions { width: 100%; flex-wrap: wrap; }
+  .oh-admin .oh-actions > button { flex: 1 1 auto; white-space: normal; }
+  .oh-admin .oh-tabs { height: auto; flex-wrap: wrap; }
+  .oh-admin .oh-pagination { flex-wrap: wrap; gap: 12px; }
+  .oh-admin button, .oh-admin input, .oh-admin [role="combobox"], .oh-admin-drawer input, .oh-admin-drawer [role="combobox"] { min-height: 44px; }
+}

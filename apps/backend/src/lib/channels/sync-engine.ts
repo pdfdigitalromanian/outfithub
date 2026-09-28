@@ -1,3 +1,4 @@
+import { redactSecrets } from "../integrations/redact"
 import crypto from "crypto"
 import type { MedusaContainer } from "@medusajs/framework/types"
 import { INTEGRATIONS_MODULE } from "../../modules/integrations"
@@ -99,17 +100,20 @@ export async function processSyncRow(container: MedusaContainer, rowId: string) 
     const shouldDelete = row.action === "delete" || !product || !product.published_in_store
 
     if (shouldDelete) {
-      await deleteFromProvider(container, provider, row, integ)
+      const deletion = await deleteFromProvider(container, provider, row, integ)
+      const removalStatus = deletion?.batch_handles?.length ? "processing" as const : "removed" as const
       await svc.updateChannelSyncs({
         id: row.id,
-        status: "removed",
+        status: removalStatus,
+        action: "delete",
+        ...(deletion ? { external_data: deletion } : {}),
         last_error: null,
         issues: null,
         last_synced_at: new Date(),
         next_attempt_at: null,
       })
-      await svc.log(provider, "info", `Removed product ${row.product_id}`)
-      return { id: row.id, status: "removed" }
+      await svc.log(provider, "info", `${removalStatus === "removed" ? "Removed" : "Removal submitted for"} product ${row.product_id}`)
+      return { id: row.id, status: removalStatus }
     }
 
     const issues = validateChannelProduct(product!, provider)
@@ -126,9 +130,10 @@ export async function processSyncRow(container: MedusaContainer, rowId: string) 
 
     const hash = crypto.createHash("sha256").update(JSON.stringify(product)).digest("hex")
     const result = await upsertToProvider(container, provider, product!, row, integ)
+    const syncStatus = provider === "meta" ? "processing" as const : "synced" as const
     await svc.updateChannelSyncs({
       id: row.id,
-      status: "synced",
+      status: syncStatus,
       external_id: result.external_id,
       external_data: result.external_data ?? null,
       payload_hash: hash,
@@ -138,9 +143,11 @@ export async function processSyncRow(container: MedusaContainer, rowId: string) 
       last_synced_at: new Date(),
       next_attempt_at: null,
     })
-    return { id: row.id, status: "synced" }
+    return { id: row.id, status: syncStatus }
   } catch (e) {
     const err = e instanceof ProviderError ? e : new ProviderError(provider, "server", (e as Error).message)
+    const stored = await svc.resolveIntegration(provider).catch(() => null)
+    err.message = redactSecrets(err.message, stored?.secrets ?? {})
     const attempts = (row.attempts ?? 0) + 1
     const retry = err.retryable && attempts < MAX_ATTEMPTS
     await svc.updateChannelSyncs({
@@ -188,7 +195,9 @@ async function upsertToProvider(
     for (const input of inputs) await client.insertProductInput(input)
     // Variants removed since the last sync are deleted from Merchant Center.
     for (const stale of previous.filter((o) => !current.includes(o))) {
-      await client.deleteProductInput(c.content_language, c.feed_label, stale).catch(() => undefined)
+      await client.deleteProductInput(c.content_language, c.feed_label, stale).catch((error: unknown) => {
+        if (!(error instanceof ProviderError) || error.kind !== "not_found") throw error
+      })
     }
     return { external_id: product.id, external_data: { offer_ids: current } }
   }
@@ -220,7 +229,7 @@ async function upsertToProvider(
   if (!imageUris.length || ext.image_key !== imageKey) {
     imageUris = []
     for (const [i, url] of product.images.slice(0, 9).entries()) {
-      const res = await fetch(url)
+      const res = await fetch(url, { signal: AbortSignal.timeout(20_000) })
       if (!res.ok) throw new ProviderError("tiktok_shop", "bad_request", `Could not download image ${url}`)
       const up = await client.uploadImage(Buffer.from(await res.arrayBuffer()), `${product.handle}-${i}.jpg`)
       imageUris.push(up.uri)
@@ -266,8 +275,8 @@ async function deleteFromProvider(
     const ids = (ext.retailer_ids as string[]) ?? []
     if (!ids.length) return
     const client = new MetaClient({ access_token: s.access_token, catalog_id: c.catalog_id, graph_version: c.graph_version })
-    await client.itemsBatch(ids.map((id) => ({ method: "DELETE" as const, data: { id } })))
-    return
+    const result = await client.itemsBatch(ids.map((id) => ({ method: "DELETE" as const, data: { id } })))
+    return { retailer_ids: ids, batch_handles: result.handles, batch_checked: false }
   }
   if (row.external_id) {
     const client = await getTikTokShopClient(container)

@@ -22,7 +22,7 @@ export default async function OrderConfirmedPage({ params }: { params: Promise<{
         <p className="eyebrow mt-6">Comanda #{order.display_id}</p>
         <h1 className="display mt-3 text-5xl sm:text-6xl">Mulțumim!</h1>
         <p className="mt-4 max-w-md text-muted">
-          Am primit comanda și ți-am trimis confirmarea la <strong className="font-medium text-ink">{order.email}</strong>. Te anunțăm când pleacă spre tine.
+          Am primit comanda. Adresa de e-mail pentru confirmare este <strong className="font-medium text-ink">{order.email}</strong>. Te anunțăm când pleacă spre tine.
         </p>
       </div>
       <div className="mt-12">

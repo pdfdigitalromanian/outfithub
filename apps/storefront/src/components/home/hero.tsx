@@ -35,13 +35,13 @@ export function Hero({ hero, products }: { hero: SiteContent["homepage"]["hero"]
           {hero.subtitle && <p className="mt-6 max-w-md text-[1.02rem] leading-relaxed text-muted animate-rise [animation-delay:120ms]">{hero.subtitle}</p>}
           <div className="mt-8 flex flex-wrap items-center gap-3 animate-rise [animation-delay:180ms]">
             {hero.cta_label && (
-              <ButtonLink href={hero.cta_href || "/shop"} size="lg">
+              <ButtonLink href={hero.cta_href || "/shop"} size="lg" className="px-6 sm:px-8">
                 {hero.cta_label}
                 <ArrowRight className="h-4 w-4" />
               </ButtonLink>
             )}
             {hero.secondary_label && (
-              <ButtonLink href={hero.secondary_href || "/shop"} size="lg" variant="ghost">
+              <ButtonLink href={hero.secondary_href || "/shop"} size="lg" variant="ghost" className="px-4 sm:px-8">
                 {hero.secondary_label}
               </ButtonLink>
             )}

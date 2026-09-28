@@ -62,11 +62,14 @@ test.describe("cart & checkout", () => {
     await expect(page.getByRole("heading", { name: "Hanorac Vintage" })).toBeVisible()
   })
 
-  test("guest can place a cash-on-delivery order", async ({ page }) => {
+  test("guest can place a cash-on-delivery order", async ({ page, context }) => {
     await addFirstAvailableToCart(page)
     await page.goto("/checkout")
     // Wait until streamed server markup has been swapped in (hidden S:* containers removed).
     await page.waitForFunction(() => !document.querySelector('div[hidden][id^="S:"]'))
+    await expect(page.getByRole("heading", { name: "Comandă fără cont" })).toBeVisible()
+    await expect(page.getByLabel("Parolă", { exact: true })).toHaveCount(0)
+    expect((await context.cookies()).some((cookie) => cookie.name === "_medusa_jwt")).toBe(false)
     await page.getByLabel("E-mail").fill(`e2e+${Date.now()}@example.com`)
     await page.getByLabel("Prenume").fill("Ana")
     await page.getByLabel(/^Nume/).fill("Popescu")
@@ -83,5 +86,6 @@ test.describe("cart & checkout", () => {
     await page.getByRole("button", { name: /Plasează comanda/ }).click()
     await expect(page).toHaveURL(/\/order\/.+\/confirmed/, { timeout: 30_000 })
     await expect(page.getByRole("heading", { name: "Mulțumim!" })).toBeVisible()
+    expect((await context.cookies()).some((cookie) => cookie.name === "_medusa_jwt")).toBe(false)
   })
 })

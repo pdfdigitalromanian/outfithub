@@ -1,0 +1,1077 @@
+{
+  "general": {
+    "values_one": "{{count}} valoare",
+    "values_other": "{{count}} valorile",
+    "values_few": "{{count}} valorile",
+    "fullList": "Toate",
+    "original": "Original",
+    "selectAll": "Selectează tot",
+    "unselectAll": "Deselectează tot",
+    "remaining": "Rămase",
+    "rank": "Ordine",
+    "areYouSureDescription": "Urmează să ștergi {{entity}} {{title}}. Această acțiune nu poate fi anulată.",
+    "noRecordsMessageFiltered": "Nu există înregistrări care corespund filtrelor",
+    "quantityPrice": "Preț în funcție de cantitate",
+    "exclusive": "Specific produsului",
+    "global": "Global",
+    "prev": "Înapoi"
+  },
+  "app": {
+    "search": {
+      "groups": {
+        "customer_group": "Grupuri de clienți",
+        "inventory_item": "Inventar",
+        "product_category": "Categorii",
+        "product_collection": "Colecții",
+        "price_list": "Liste de prețuri",
+        "tax_region": "Regiuni fiscale",
+        "return_reason": "Motive de întoarcere",
+        "sales_channel": "Canale de vânzare",
+        "product_type": "Tipuri de produse",
+        "product_tag": "Etichete de produs",
+        "stock_location": "Locații",
+        "shipping_profile": "Profiluri de expediere",
+        "publishable_api_key": "Chei API care pot fi publicate",
+        "secret_api_key": "Chei secrete API",
+        "product_variant": "Variante de produs"
+      }
+    }
+  },
+  "layout": {
+    "defaultView": "Implicit",
+    "customizeTopbar": "Personalizează bara de sus",
+    "customizeSidebar": "Personalizează bara laterală",
+    "customizeSettingsSidebar": "Personalizează bara laterală a setărilor",
+    "customizePage": "Personalizează pagina",
+    "customizeLayout": "Personalizează aspectul",
+    "viewingPersonalLayout": "Vezi un aspect personalizat",
+    "viewingSystemLayout": "Vezi aspectul sistemului",
+    "personalView": "Personal",
+    "empty": "Gol",
+    "dropToSectionEnd": "Plasează aici pentru a muta la final",
+    "dragToReorder": "Trage pentru a reordona",
+    "saveForEveryone": "Salvează pentru toți",
+    "saveForEveryoneTitle": "Salvează aspectul pentru toți",
+    "saveForEveryoneDescription": "Această acțiune actualizează aspectul implicit al paginii pentru utilizatorii care nu l-au personalizat. Confirmi?",
+    "saveSuccess": "Aspect salvat"
+  },
+  "filters": {
+    "columnsLabel": "Coloane",
+    "collapse": {
+      "all": "Restrânge tot"
+    },
+    "sorting": {
+      "alphabeticallyAsc": "De la A la Z",
+      "alphabeticallyDesc": "De la Z la A"
+    }
+  },
+  "products": {
+    "variantMedia": {
+      "emptyState": {
+        "header": "Încă nu există media",
+        "action": "Adăugați conținut media",
+        "description": "Adaugă imagini variantei pentru a o prezenta în magazin."
+      },
+      "label": "Fișierele media ale variantei",
+      "manageVariants": "Gestionează variantele",
+      "addToMultipleVariants": "Adaugă la mai multe variante",
+      "manageVariantsDescription": "Gestionează variantele asociate imaginii",
+      "successToast": "Variantele imaginii au fost actualizate."
+    },
+    "columns": {
+      "product_display": "Produs",
+      "variants_count": "Variante",
+      "sales_channels_display": "Canale de vânzare",
+      "collection": "Colectare",
+      "status": "Stare",
+      "thumbnail": "Miniatură",
+      "title": "Titlu",
+      "handle": "Mâner",
+      "created_at": "Creat",
+      "updated_at": "Actualizat"
+    },
+    "fields": {
+      "shipping_profile": {
+        "label": "Profil de livrare",
+        "hint": "Asociază produsul unui profil de livrare"
+      }
+    },
+    "shippingProfile": {
+      "edit": {
+        "header": "Configurație de livrare",
+        "toasts": {
+          "success": "Profilul de livrare pentru {{title}} a fost actualizat."
+        }
+      },
+      "header": "Configurarea livrării",
+      "create": {
+        "errors": {
+          "required": "Profilul de livrare este obligatoriu"
+        }
+      }
+    },
+    "create": {
+      "variants": {
+        "selectValuesHint": "Selectează valorile de utilizat pentru fiecare opțiune"
+      }
+    },
+    "media": {
+      "manageImageVariants": "Gestionează variantele asociate",
+      "fileTooLarge": "Unul sau mai multe fișiere depășesc dimensiunea maximă de {{size}}: {{name}}",
+      "variantImages": "Imaginile variantei",
+      "showAvailableImages": "Afișează imaginile disponibile",
+      "availableImages": "Selectează imagini",
+      "selectToAdd": "Adaugă imagini ale produsului la variantă. Pentru imagini noi, adaugă-le mai întâi la produs.",
+      "removeSelected": "Elimină selecția",
+      "label": "Imagini și fișiere"
+    },
+    "options": {
+      "manage": {
+        "header": "Gestionează opțiunile produsului",
+        "description": "Asociază sau elimină opțiuni pentru acest produs.",
+        "label": "Opțiuni de produs",
+        "hint": "Selectează opțiunile de asociat acestui produs.",
+        "placeholder": "Selectează opțiuni",
+        "error": {
+          "noValues": "Selectează cel puțin o valoare pentru opțiunile adăugate."
+        }
+      }
+    }
+  },
+  "collections": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio colecție nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nicio colecție",
+        "description": "Nu există colecții de afișat."
+      }
+    }
+  },
+  "productOptions": {
+    "domain": "Opțiuni",
+    "values": {
+      "header": "Valori",
+      "list": {
+        "noRecords": "Nu există valori pentru această opțiune."
+      },
+      "delete": {
+        "confirmation": "Urmează să ștergi valoarea „{{value}}”. Această acțiune nu poate fi anulată.",
+        "successToast": "Valoarea opțiunii a fost ștearsă."
+      }
+    },
+    "create": {
+      "tabs": {
+        "details": "Detalii",
+        "organize": "Organizează ordinea"
+      },
+      "header": "Creează opțiune de produs",
+      "hint": "Creează o opțiune de produs și gestionează valorile acesteia.",
+      "successToast": "Opțiunea de produs „{{title}}” a fost creată."
+    },
+    "fields": {
+      "title": {
+        "label": "Titlu",
+        "placeholder": "Dimensiune"
+      },
+      "values": {
+        "label": "Valori",
+        "placeholder": "S, M, L"
+      }
+    },
+    "subtitle": "Gestionează opțiunile produselor și valorile asociate.",
+    "products": {
+      "list": {
+        "noRecords": "Nu există produse cu această opțiune."
+      }
+    },
+    "manage": {
+      "exclusiveOption": "Opțiune exclusivă produsului"
+    },
+    "edit": {
+      "header": "Editează opțiunea de produs",
+      "description": "Actualizează detaliile și valorile asociate opțiunii de produs.",
+      "successToast": "Opțiunea de produs „{{title}}” a fost actualizată."
+    },
+    "delete": {
+      "confirmation": "Urmează să ștergi opțiunea de produs „{{title}}”. Această acțiune nu poate fi anulată.",
+      "successToast": "Opțiunea de produs a fost ștearsă."
+    }
+  },
+  "inventory": {
+    "export": {
+      "success": {
+        "title": "Procesăm exportul dvs",
+        "description": "Exportul datelor poate dura câteva minute. "
+      },
+      "filters": {
+        "title": "Filtre",
+        "description": "Aplicați filtre în prezentarea generală a tabelului pentru a ajusta această vizualizare"
+      },
+      "header": "Exportă lista stocurilor",
+      "description": "Exportă lista stocurilor într-un fișier CSV."
+    },
+    "manageLocationQuantity": "Gestionează cantitatea din locație",
+    "quantityAcrossLocations": "{{quantity}} în {{locations}} locații",
+    "unitOfMeasurePlaceholder": "lb",
+    "unitOfMeasureHint": "Unitatea în care este păstrat și numărat stocul. Apare lângă cantități în administrare.",
+    "levelDeleted": "Nivelul stocului a fost șters."
+  },
+  "customers": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Niciun client nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Niciun client",
+        "description": "Nu există clienți de afișat."
+      }
+    },
+    "addresses": {
+      "fields": {
+        "city": "Oraş",
+        "province": "Provincie",
+        "country": "Ţară",
+        "phone": "Telefon",
+        "company": "Companie",
+        "addressName": "Denumirea adresei",
+        "address1": "Adresa 1",
+        "address2": "Adresa 2",
+        "postalCode": "Cod poștal",
+        "countryCode": "Codul țării",
+        "provinceCode": "Codul județului"
+      },
+      "title": "Adrese",
+      "create": {
+        "header": "Creează adresă",
+        "hint": "Creează o adresă nouă pentru client.",
+        "successToast": "Adresa a fost creată."
+      }
+    }
+  },
+  "orders": {
+    "export": {
+      "filters": {
+        "title": "Filtre",
+        "description": "Următoarele filtre vor fi aplicate exportului."
+      },
+      "header": "Exportă lista comenzilor",
+      "description": "Exportă lista comenzilor într-un fișier CSV.",
+      "success": {
+        "title": "Export început",
+        "description": "Vei primi o notificare când exportul este gata."
+      }
+    },
+    "transfer": {
+      "registered": "Înregistrat",
+      "guest": "Oaspete",
+      "guestSuccess": "Comanda a fost transferată clientului fără cont: {{email}}.",
+      "ownerType": "Tip de cont",
+      "registeredDescription": "Transferă către un client înregistrat, care trebuie să accepte solicitarea.",
+      "guestDescription": "Transferă către un client fără cont folosind adresa de e-mail. Se aplică imediat.",
+      "newGuestOwner": "E-mailul noului proprietar",
+      "newGuestOwnerDescription": "Adresa de e-mail a clientului fără cont căruia îi transferi comanda. Dacă nu există, se creează un client fără cont."
+    },
+    "edits": {
+      "sendNotification": "Trimite o notificare",
+      "sendNotificationHint": "Notifică clientul despre această modificare a comenzii."
+    },
+    "returns": {
+      "estDifference": "Diferenta estimata",
+      "inbound": "Primire"
+    },
+    "fulfillment": {
+      "error": {
+        "wrongQuantity_one": "Un singur articol este disponibil pentru îndeplinire",
+        "noShippingOption": "Opțiunea de livrare este obligatorie",
+        "noLocation": "Locația este obligatorie"
+      },
+      "differentOptionSelected": "Opțiunea de livrare aleasă diferă de cea selectată de client.",
+      "disabledItemTooltip": "Opțiunea de livrare aleasă nu permite expedierea acestui articol",
+      "markAsPickedUp": "Marchează ca ridicată",
+      "locationUnavailable": "Locație ștearsă sau indisponibilă",
+      "status": {
+        "awaitingPickup": "În așteptarea ridicării",
+        "awaitingShipping": "În așteptarea expedierii",
+        "awaitingDelivery": "În așteptarea livrării"
+      },
+      "toast": {
+        "fulfillmentPickedUp": "Expedierea a fost marcată ca ridicată"
+      }
+    },
+    "giftCardsStoreCreditLines": "Carduri cadou și linii de credit",
+    "creditLines": {
+      "title": "Linii de credit",
+      "total": "Suma tuturor liniilor de credit",
+      "creditOrDebit": "Credit / Debit",
+      "createCreditLine": "Creează linie de credit",
+      "createCreditLineSuccess": "Linia de credit a fost creată",
+      "createCreditLineError": "Eroare la crearea liniei de credit",
+      "createCreditLineDescription": "Creează o linie de credit pentru suma {{amount}}",
+      "operation": "Operațiune",
+      "credit": "Credit",
+      "creditDescription": "Adaugă o sumă pozitivă la comandă",
+      "debit": "Debit",
+      "debitDescription": "Scade o sumă din comandă"
+    },
+    "balanceSettlement": {
+      "title": "Regularizarea soldului",
+      "settlementType": "Tipul regularizării",
+      "settlementTypes": {
+        "paymentMethod": "Metodă de plată",
+        "paymentMethodDescription": "Rambursează suma prin metoda de plată",
+        "creditLine": "Credit în magazin",
+        "creditLineDescription": "Rambursează suma sub formă de credit în magazin",
+        "creditLineNoOutstandingAmountDescription": "Disponibil doar când comanda are un sold restant. Creează mai întâi un retur sau modifică comanda.",
+        "creditLineGuestDescription": "Disponibil doar clienților cu cont. Această comandă a fost plasată fără cont."
+      }
+    },
+    "summary": {
+      "totalAfterDiscount": "Total după reducere"
+    },
+    "payment": {
+      "totalStoreCreditRefunds": "Total rambursări în credit în magazin",
+      "pendingAuthorization": "Plata așteaptă autorizarea din partea procesatorului.",
+      "checkStatus": "Verifică starea",
+      "checkStatusSuccess": "Plata a fost autorizată.",
+      "stillPending": "Plata încă așteaptă autorizarea."
+    },
+    "claims": {
+      "carryOverPromotion": "Păstrează promoțiile",
+      "carryOverPromotionHint": "Aplică promoțiile comenzii produselor din reclamație",
+      "carryOverPromotionTooltip": "Pot fi păstrate doar promoțiile cu sumă fixă alocată fiecărui articol și cele procentuale alocate fiecărui articol sau întregului grup."
+    },
+    "exchanges": {
+      "carryOverPromotion": "Păstrează promoțiile",
+      "carryOverPromotionHint": "Aplică promoțiile comenzii produselor de schimb",
+      "carryOverPromotionTooltip": "Pot fi păstrate doar promoțiile cu sumă fixă alocată fiecărui articol și cele procentuale alocate fiecărui articol sau întregului grup."
+    },
+    "allocateItems": {
+      "toast": {
+        "error": "Nu s-au putut aloca următoarele articole: {{items}}"
+      }
+    },
+    "shipment": {
+      "trackingUrl": "URL de urmărire",
+      "labelUrl": "URL etichetă"
+    }
+  },
+  "draftOrders": {
+    "list": {
+      "filtered": {
+        "heading": "Nu s-au găsit rezultate",
+        "description": "Nicio comandă ciornă nu corespunde filtrelor."
+      },
+      "noRecordsMessage": "Nu există comenzi ciornă",
+      "description": "Creează o comandă ciornă pentru a începe."
+    },
+    "domain": "Comenzi ciornă"
+  },
+  "stockLocations": {
+    "list": {
+      "noRecordsMessage": "Fără înregistrări",
+      "noRecordsMessageEmpty": "Nu au fost găsite locații",
+      "noRecordsMessageFiltered": "Nicio locație nu corespunde filtrelor"
+    },
+    "delete": {
+      "successToast": "Locația „{{name}}” a fost ștearsă."
+    },
+    "sidebar": {
+      "shippingOptionTypes": {
+        "label": "Tipuri de opțiuni de livrare",
+        "description": "Grupează opțiunile de livrare pe tipuri"
+      }
+    },
+    "salesChannels": {
+      "hint": "Gestionează canalele de vânzare asociate acestei locații."
+    },
+    "pickupOptions": {
+      "edit": {
+        "header": "Editează opțiunea de ridicare"
+      }
+    },
+    "shippingOptions": {
+      "create": {
+        "pickup": {
+          "header": "Creează opțiune de ridicare pentru {{zone}}",
+          "hint": "Creează o opțiune nouă pentru a defini cum se ridică produsele din această locație.",
+          "label": "Opțiuni de ridicare",
+          "successToast": "Opțiunea de ridicare {{name}} a fost creată."
+        }
+      },
+      "fields": {
+        "count": {
+          "pickup_one": "{{count}} opțiune de ridicare",
+          "pickup_other": "{{count}} opțiuni de ridicare",
+          "pickup_few": "{{count}} opțiuni de ridicare"
+        },
+        "type": "Tipul opțiunii de livrare"
+      }
+    }
+  },
+  "taxRegions": {
+    "fields": {
+      "taxProvider": "Furnizor de taxe",
+      "targets": {
+        "options": {
+          "shippingOption": "Opțiuni de livrare"
+        },
+        "tags": {
+          "shippingOption": "Opțiune de livrare"
+        },
+        "placeholders": {
+          "shippingOption": "Caută opțiuni de livrare"
+        }
+      }
+    },
+    "create": {
+      "errors": {
+        "missingProvider": "Furnizorul este obligatoriu pentru crearea unei regiuni fiscale.",
+        "missingCountry": "Țara este obligatorie pentru crearea unei regiuni fiscale."
+      }
+    },
+    "edit": {
+      "header": "Editează regiunea fiscală",
+      "hint": "Editează detaliile regiunii fiscale.",
+      "successToast": "Regiunea fiscală a fost actualizată."
+    },
+    "provider": {
+      "header": "Furnizor de taxe"
+    }
+  },
+  "promotions": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio promoție nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nicio promoție",
+        "description": "Nu există promoții de afișat."
+      }
+    },
+    "fields": {
+      "usage": "Utilizare",
+      "allocationTooltip": "„Fiecare” aplică limita de cantitate pe articol, iar „O singură dată” o aplică întregului coș",
+      "taxInclusive": "Taxe incluse",
+      "usageLimit": "Limită de utilizare",
+      "conditions": {
+        "target-rules": {
+          "order": {
+            "title": "Căror articole li se aplică promoția?",
+            "description": "Promoția se aplică articolelor care îndeplinesc condițiile următoare."
+          },
+          "shipping_methods": {
+            "title": "Căror metode de livrare li se aplică promoția?",
+            "description": "Promoția se aplică metodelor de livrare care îndeplinesc condițiile următoare."
+          },
+          "items": {
+            "title": "Căror articole li se aplică promoția?",
+            "description": "Promoția se aplică articolelor care îndeplinesc condițiile următoare."
+          }
+        }
+      }
+    },
+    "form": {
+      "taxInclusive": {
+        "title": "Promoția include taxele?",
+        "description": "Activează pentru a aplica promoția după taxe"
+      },
+      "allocation": {
+        "once": {
+          "title": "O singură dată",
+          "description": "Aplică valoarea unui număr limitat de articole"
+        }
+      },
+      "value": {
+        "invalid": "Valoare nevalidă a promoției"
+      },
+      "limit": {
+        "title": "Limită de utilizare",
+        "description": "Numărul maxim de utilizări ale promoției pentru toate comenzile. Lasă necompletat pentru utilizare nelimitată."
+      },
+      "status": {
+        "label": "Stare",
+        "draft": {
+          "title": "Ciornă"
+        }
+      }
+    },
+    "templates": {
+      "amount_off_products": {
+        "title": "Reducere fixă la produse",
+        "description": "Reduce prețul anumitor produse sau al unei colecții"
+      },
+      "amount_off_order": {
+        "title": "Reducere fixă la comandă",
+        "description": "Reduce valoarea totală a comenzii"
+      },
+      "percentage_off_product": {
+        "title": "Reducere procentuală la produs",
+        "description": "Aplică o reducere procentuală produselor selectate"
+      },
+      "percentage_off_order": {
+        "title": "Reducere procentuală la comandă",
+        "description": "Reduce procentual valoarea totală a comenzii"
+      },
+      "buy_get": {
+        "title": "Cumperi X, primești Y",
+        "description": "Cumperi X produse și primești Y produse"
+      },
+      "shipping_discount": {
+        "title": "Livrare gratuită",
+        "description": "Aplică o reducere de 100% la costul livrării"
+      }
+    }
+  },
+  "campaigns": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio campanie nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nicio campanie",
+        "description": "Nu există campanii de afișat."
+      }
+    },
+    "fields": {
+      "totalUsedByAttribute": "Total utilizat"
+    },
+    "budget": {
+      "attribute": {
+        "customer_id": "client",
+        "customer_email": "e-mail"
+      },
+      "fields": {
+        "budgetAttribute": "Limitează utilizarea per",
+        "budgetAttributeTooltip": "Stabilește de câte ori poate folosi promoția fiecare client sau adresă de e-mail.",
+        "totalUsedByAttribute": "Limită de buget per: {{attribute}}",
+        "totalUsedByAttributeCustomerId": "Limită de buget per client",
+        "totalUsedByAttributeEmail": "Limită de buget per e-mail"
+      },
+      "type": {
+        "useByAttribute": {
+          "title": "Utilizare după atribut (ID client, e-mail etc.)",
+          "titleCustomerId": "Utilizare per client",
+          "titleEmail": "Utilizare per e-mail",
+          "description": "Stabilește numărul maxim de utilizări ale promoției pentru o anumită valoare a atributului."
+        }
+      }
+    }
+  },
+  "priceLists": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio listă de prețuri nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nicio listă de prețuri",
+        "description": "Nu există liste de prețuri de afișat."
+      }
+    },
+    "quantityPricing": {
+      "header": "Preturi conditionate pt {{name}}",
+      "actions": {
+        "addPrice": "Adăugați preț"
+      },
+      "description": "Gestionează prețurile condiționate ale variantei în funcție de cantitatea din coș.",
+      "rules": {
+        "amount": "Prețul variantei de produs",
+        "minQuantity": "Cantitatea minimă din coș",
+        "maxQuantity": "Cantitatea maximă din coș",
+        "qty": "CANT.",
+        "allQuantities": "Toate cantitățile",
+        "min": "Min.",
+        "max": "Max."
+      },
+      "attributes": {
+        "quantity": "Cantitatea din coș"
+      },
+      "summaries": {
+        "range": "Dacă <0>{{attribute}}</0> este între <1>{{min}}</1> și <2>{{max}}</2>",
+        "greaterThan": "Dacă <0>{{attribute}}</0> ≥ <1>{{min}}</1>",
+        "lessThan": "Dacă <0>{{attribute}}</0> ≤ <1>{{max}}</1>"
+      },
+      "errors": {
+        "minGreaterThanMax": "Cantitatea minimă nu poate depăși cantitatea maximă",
+        "mustBePositive": "Cantitatea trebuie să fie cel puțin 1"
+      }
+    }
+  },
+  "profile": {
+    "mfa": {
+      "status": "Stare",
+      "method": "Metodă",
+      "enabled": "Activat",
+      "disabled": "Dezactivat",
+      "title": "Autentificare în doi pași",
+      "description": "Solicită o aplicație de autentificare la conectare.",
+      "pending": "În așteptarea configurării",
+      "authenticatorApp": "Aplicație de autentificare",
+      "noMethod": "Nicio metodă de autentificare activată",
+      "setupTitle": "Configurează aplicația de autentificare",
+      "setupAuthenticatorApp": "Configurează aplicația de autentificare",
+      "setupDescription": "Scanează codul QR cu aplicația de autentificare, apoi introdu codul din 6 cifre pentru a finaliza configurarea.",
+      "setupError": "Aplicația de autentificare nu a putut fi configurată.",
+      "verifyError": "Codul de verificare nu a putut fi confirmat.",
+      "qrError": "Codul QR nu a putut fi generat.",
+      "recoveryCodesTitle": "Coduri de recuperare",
+      "recoveryCodesDescription": "Copiază și păstrează aceste coduri pentru situația în care pierzi accesul la aplicația de autentificare.",
+      "recoveryCodesError": "Codurile de recuperare nu au putut fi generate.",
+      "disableTitle": "Dezactivează autentificarea în doi pași",
+      "disableDescription": "Urmează să dezactivezi autentificarea în doi pași pentru contul tău.",
+      "disableChallengeDescription": "Introdu codul din 6 cifre din aplicația de autentificare pentru a dezactiva autentificarea în doi pași.",
+      "disableError": "Autentificarea în doi pași nu a putut fi dezactivată.",
+      "disableSuccess": "Autentificarea în doi pași a fost dezactivată"
+    }
+  },
+  "roles": {
+    "create": {
+      "tabs": {
+        "details": "Detalii",
+        "permissions": "Permisiuni"
+      },
+      "permissions": {
+        "filtered": {
+          "heading": "Niciun rezultat",
+          "description": "Nicio permisiune nu corespunde filtrelor selectate."
+        },
+        "empty": {
+          "heading": "Nicio permisiune",
+          "description": "Nu există permisiuni de selectat."
+        }
+      },
+      "header": "Creează rol",
+      "hint": "Creează un rol pentru a gestiona accesul la administrare.",
+      "successToast": "Rolul {{name}} a fost creat"
+    },
+    "permissions": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio permisiune nu corespunde filtrelor selectate."
+      },
+      "header": "Gestionează permisiunile",
+      "hint": "Selectează permisiunile pe care trebuie să le includă rolul.",
+      "empty": {
+        "heading": "Nicio permisiune",
+        "description": "Nu există permisiuni de selectat."
+      }
+    },
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Niciun rol nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nu există roluri",
+        "description": "Creează roluri pentru a gestiona accesul la administrare."
+      }
+    },
+    "domain": "Roluri",
+    "subtitle": "Gestionează rolurile de acces și permisiunile.",
+    "edit": {
+      "header": "Editează rolul",
+      "successToast": "Rolul {{name}} a fost actualizat"
+    },
+    "delete": {
+      "title": "Șterge rolul",
+      "description": "Urmează să ștergi rolul {{name}}. Această acțiune nu poate fi anulată.",
+      "successToast": "Rolul {{name}} a fost șters"
+    },
+    "fields": {
+      "permissions": "Permisiuni"
+    },
+    "actions": {
+      "managePermissions": "Gestionează permisiunile"
+    },
+    "users": {
+      "alreadyAddedTooltip": "Utilizatorul are deja acest rol.",
+      "unassignableRoleTooltip": "Nu poți atribui acest rol: permisiunile tale nu acoperă toate politicile sale.",
+      "add": {
+        "successToast_one": "Utilizatorul a fost adăugat la rol.",
+        "successToast_other": "Utilizatorii au fost adăugați la rol.",
+        "successToast_few": "Utilizatorii au fost adăugați la rol.",
+        "list": {
+          "noRecordsMessage": "Creează mai întâi un utilizator."
+        }
+      },
+      "remove": {
+        "title_one": "Elimină utilizatorul",
+        "title_other": "Elimină utilizatorii",
+        "title_few": "Elimină utilizatorii",
+        "description_one": "Urmează să elimini {{count}} utilizator din rol. Această acțiune nu poate fi anulată.",
+        "description_other": "Urmează să elimini {{count}} utilizatori din rol. Această acțiune nu poate fi anulată.",
+        "description_few": "Urmează să elimini {{count}} utilizatori din rol. Această acțiune nu poate fi anulată."
+      },
+      "list": {
+        "noRecordsMessage": "Acest rol nu are utilizatori."
+      }
+    }
+  },
+  "policies": {
+    "fields": {
+      "users": "Utilizatori",
+      "roles": "Roluri"
+    },
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio politică nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nu există politici de acces",
+        "description": "Creează politici pentru a gestiona permisiunile acordate de roluri."
+      }
+    },
+    "domain": "Politici de acces",
+    "subtitle": "Definește permisiunile pe care le pot acorda rolurile.",
+    "create": {
+      "header": "Creează politică de acces",
+      "hint": "Definește o permisiune nouă care poate fi asociată rolurilor.",
+      "successToast": "Politica {{key}} a fost creată"
+    },
+    "edit": {
+      "header": "Editează politica de acces",
+      "successToast": "Politica {{key}} a fost actualizată"
+    },
+    "delete": {
+      "title": "Șterge politica de acces",
+      "description": "Urmează să ștergi politica {{key}}. Această acțiune nu poate fi anulată.",
+      "successToast": "Politica {{key}} a fost ștearsă"
+    },
+    "roles": {
+      "list": {
+        "noRecordsMessage": "Niciun rol nu include încă această politică."
+      },
+      "empty": {
+        "heading": "Niciun rol",
+        "description": "Niciun rol nu include încă această politică."
+      }
+    }
+  },
+  "regions": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Nicio regiune nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nicio regiune",
+        "description": "Nu există regiuni de afișat."
+      }
+    }
+  },
+  "salesChannels": {
+    "list": {
+      "filtered": {
+        "heading": "Niciun rezultat",
+        "description": "Niciun canal de vânzare nu corespunde filtrelor selectate."
+      },
+      "empty": {
+        "heading": "Nu există canale de vânzare",
+        "description": "Canalele de vânzare create vor apărea aici."
+      }
+    }
+  },
+  "refundReasons": {
+    "fields": {
+      "label": {
+        "label": "Eticheta",
+        "placeholder": "Gest de bunăvoință"
+      },
+      "code": {
+        "label": "Cod",
+        "placeholder": "gest_de_bunavointa"
+      },
+      "description": {
+        "label": "Descriere",
+        "placeholder": "Clientul a avut o experiență neplăcută la cumpărături"
+      }
+    },
+    "domain": "Motive de rambursare",
+    "subtitle": "Gestionează motivele pentru efectuarea rambursărilor.",
+    "calloutHint": "Gestionează motivele pentru clasificarea rambursărilor.",
+    "editReason": "Editează motivul rambursării",
+    "create": {
+      "header": "Adaugă motiv de rambursare",
+      "subtitle": "Specifică cele mai frecvente motive de rambursare.",
+      "hint": "Creează un motiv nou pentru clasificarea rambursărilor.",
+      "successToast": "Motivul de rambursare {{label}} a fost creat."
+    },
+    "edit": {
+      "header": "Editează motivul rambursării",
+      "subtitle": "Editează valoarea motivului de rambursare.",
+      "successToast": "Motivul de rambursare {{label}} a fost actualizat."
+    },
+    "delete": {
+      "confirmation": "Urmează să ștergi motivul de rambursare „{{label}}”. Această acțiune nu poate fi anulată.",
+      "successToast": "Motivul de rambursare a fost șters."
+    }
+  },
+  "login": {
+    "mfa": {
+      "backToLogin": "Înapoi la autentificare",
+      "title": "Autentificare în doi pași",
+      "description": "Introdu codul din 6 cifre din aplicația de autentificare.",
+      "recoveryDescription": "Introdu unul dintre codurile de recuperare.",
+      "recoveryCodePlaceholder": "Cod de recuperare",
+      "verify": "Verifică",
+      "verifyError": "Codul de verificare nu a putut fi confirmat.",
+      "completeError": "Autentificarea nu a putut fi finalizată.",
+      "useRecoveryCodePrompt": "Ai pierdut accesul la aplicația de autentificare?",
+      "useRecoveryCode": "Folosește un cod de recuperare",
+      "useAuthenticatorPrompt": "Ai acces la aplicația de autentificare?",
+      "useAuthenticator": "Folosește un cod de autentificare"
+    }
+  },
+  "workflowExecutions": {
+    "stateLabel": "Stat"
+  },
+  "searchIndexes": {
+    "domain": "Căutare",
+    "providerLabel": "Furnizor",
+    "status": {
+      "pending": "În așteptare",
+      "error": "Eroare",
+      "building": "În curs de construire",
+      "ready": "Pregătit"
+    },
+    "subtitle": "Vezi indexurile de căutare înregistrate și reconstruiește-le din datele sursă.",
+    "fieldsLabel": "Câmpuri indexate",
+    "reindex": "Reindexează",
+    "reindexConfirmationTitle": "Reindexezi {{name}}?",
+    "reindexConfirmation": "Această acțiune reconstruiește indexul „{{name}}” din datele sursă. Rezultatele pot fi incomplete până la finalizare.",
+    "reindexSuccess": "Reindexarea {{name}} a început",
+    "reindexSinceLabel": "Începând cu",
+    "reindexSinceHint": "Reconstruiește doar documentele modificate de la această dată. Lasă necompletat pentru a reconstrui tot.",
+    "reindexEntityIdsLabel": "ID-uri de entități",
+    "reindexEntityIdsHint": "ID-uri separate prin virgulă sau rând nou pentru a reconstrui doar documentele respective. Suportul depinde de definiția indexului.",
+    "delete": "Șterge indexul",
+    "deleteWarning": "Această acțiune șterge indexul „{{name}}”, toate versiunile și datele sale din motorul de căutare. Căutarea va fi indisponibilă până la reconstruirea prin următoarea migrare. Acțiunea nu poate fi anulată.",
+    "deleteSuccess": "Indexul {{name}} a fost șters",
+    "noFields": "Nu există câmpuri indexate.",
+    "list": {
+      "noRecordsMessage": "Nu există indexuri de căutare înregistrate."
+    }
+  },
+  "shippingOptionTypes": {
+    "fields": {
+      "label": "Eticheta",
+      "code": "Cod",
+      "description": "Descriere"
+    },
+    "domain": "Tipuri de opțiuni de livrare",
+    "subtitle": "Organizează opțiunile de livrare pe tipuri.",
+    "create": {
+      "header": "Creează tip de opțiune de livrare",
+      "hint": "Creează un tip nou pentru clasificarea opțiunilor de livrare.",
+      "successToast": "Tipul de opțiune de livrare {{label}} a fost creat."
+    },
+    "edit": {
+      "header": "Editează tipul opțiunii de livrare",
+      "successToast": "Tipul de opțiune de livrare {{label}} a fost actualizat."
+    },
+    "delete": {
+      "confirmation": "Urmează să ștergi tipul opțiunii de livrare „{{label}}”. Această acțiune nu poate fi anulată.",
+      "successToast": "Tipul opțiunii de livrare „{{label}}” a fost șters."
+    }
+  },
+  "fields": {
+    "promotionCode": "Cod promoțional",
+    "actions": "Acțiuni",
+    "reference": "Referință",
+    "reference_id": "ID referință",
+    "enabledInStore": "Activat în magazin",
+    "isReturn": "Este retur",
+    "serviceZone": "Zonă de servicii",
+    "creditTotal": "Total linii de credit",
+    "resource": "Resursă",
+    "operation": "Operațiune",
+    "unitOfMeasure": "Unitate de măsură"
+  },
+  "views": {
+    "save": "Salva",
+    "prompts": {
+      "updateDefault": {
+        "cancelText": "Anula",
+        "title": "Actualizează vizualizarea implicită",
+        "description": "Această acțiune actualizează vizualizarea implicită pentru toți utilizatorii. Confirmi?",
+        "confirmText": "Actualizează pentru toți"
+      },
+      "updateView": {
+        "cancelText": "Anula",
+        "title": "Actualizează vizualizarea",
+        "description": "Confirmi actualizarea „{{name}}”?",
+        "confirmText": "Actualizează"
+      }
+    },
+    "saveAsNew": "Salvează ca vizualizare nouă",
+    "updateDefaultForEveryone": "Actualizează implicit pentru toți",
+    "updateViewName": "Actualizează vizualizarea"
+  },
+  "permissions": {
+    "resources": {
+      "customer": "Client",
+      "order": "Comanda",
+      "product": "Produs",
+      "inventory": "Inventar",
+      "campaign": "Campanie",
+      "region": "Regiune",
+      "store": "Magazin",
+      "role": "Rol",
+      "sales_channel": "Canal de vânzări",
+      "shipping_profile": "Profil de livrare",
+      "refund_reason": "Motivul rambursării",
+      "customer_group": "Grup de clienți",
+      "product_category": "Categorie de produse",
+      "product_collection": "Colecție de produse",
+      "product_tag": "Etichetă de produs",
+      "product_type": "Tip de produs",
+      "reservation": "Rezervare",
+      "promotion": "Promoție",
+      "price_list": "Listă de prețuri",
+      "user": "Utilizator",
+      "permission": "Permisiune",
+      "stock_location": "Locație de stoc",
+      "shipping_option": "Opțiune de livrare",
+      "tax_region": "Regiune fiscală",
+      "api_key": "Cheie API",
+      "return_reason": "Motiv de retur",
+      "workflow": "Flux de lucru",
+      "translation": "Traducere"
+    },
+    "actions": {
+      "read": "Vedere",
+      "create": "Crea",
+      "update": "Edita",
+      "delete": "Şterge"
+    },
+    "accessDenied": {
+      "title": "Acces refuzat",
+      "description": "Nu ai permisiunea de a accesa această pagină.",
+      "requiredPermission": "Permisiune necesară: {{permission}}",
+      "action": "Nu ai permisiunea de a efectua această acțiune."
+    },
+    "requiredPermissions": {
+      "title": "Permisiuni necesare",
+      "none": "Nicio permisiune declarată pentru această vizualizare.",
+      "anyOf": "Oricare dintre",
+      "allOf": "Toate",
+      "source": "Sursă: {{source}}"
+    }
+  },
+  "metadata": {
+    "edit": {
+      "actions": {
+        "addRow": "Adaugă rând"
+      }
+    }
+  },
+  "actions": {
+    "saveChanges": "Salvează modificările",
+    "saveAndClose": "Salvează și închide",
+    "editVariantImages": "Editează imaginile variantei",
+    "editImages": "Editează imaginile",
+    "show": "Afișează",
+    "manage": "Gestionează",
+    "goToProductOption": "Mergi la opțiunea produsului",
+    "create": "Creează"
+  },
+  "addresses": {
+    "title": "Adrese"
+  },
+  "users": {
+    "inviteRolesTooltip": "Dacă nu selectezi un rol, utilizatorul va fi invitat cu rol de superutilizator.",
+    "copyResetPasswordLink": "Copiază linkul de resetare a parolei",
+    "copyResetPasswordLinkSuccess": "Linkul de resetare a parolei a fost copiat",
+    "copyResetPasswordLinkHint": "Linkul expiră în scurt timp și invalidează linkurile de resetare trimise anterior acestui utilizator."
+  },
+  "translations": {
+    "domain": "Traduceri",
+    "settings": {
+      "header": "Gestionează entitățile traductibile",
+      "successToast": "Setările au fost actualizate"
+    },
+    "actions": {
+      "manage": "Gestionează traducerile",
+      "manageEntities": "Gestionează entitățile",
+      "manageLocales": "Gestionează limbile"
+    },
+    "subtitle": "Gestionează traducerile datelor din Medusa",
+    "list": {
+      "metrics": "{{translated}} din {{total}} traduceri"
+    },
+    "edit": {
+      "successToast": "Traducerile au fost actualizate",
+      "unsavedChanges": {
+        "title": "Traduceri nesalvate",
+        "description": "Nu pierde modificările. Ai traduceri care nu au fost încă salvate"
+      }
+    },
+    "bulk": {
+      "header": "Editor de traduceri în masă",
+      "mainColumn": "Limbă"
+    },
+    "activeLocales": {
+      "heading": "Limbi",
+      "subtitle": "Traduceri activate",
+      "noLocalesTip": "Configurează cel puțin o limbă pentru a începe traducerea datelor",
+      "noLocalesTipConfigureAction": "Configurează"
+    },
+    "completion": {
+      "heading": "Câmpuri traduse",
+      "translated": "Traduse",
+      "toTranslate": "Netraduse",
+      "footer": "Limbi"
+    }
+  },
+  "store": {
+    "defaultLocale": "Limba implicită",
+    "defaultSalesChannel": "Canal de vânzare implicit",
+    "defaultLocation": "Locație implicită",
+    "locales": "Limbi",
+    "removeLocaleWarning_one": "Urmează să elimini {{count}} limbă din magazin. Traducerile în această limbă vor fi șterse.",
+    "removeLocaleWarning_other": "Urmează să elimini {{count}} limbi din magazin. Traducerile în aceste limbi vor fi șterse.",
+    "removeLocaleWarning_few": "Urmează să elimini {{count}} limbi din magazin. Traducerile în aceste limbi vor fi șterse.",
+    "localeAlreadyAdded": "Limba a fost deja adăugată în magazin.",
+    "toast": {
+      "localesUpdated": "Limbile au fost actualizate",
+      "localesRemoved": "Limbile au fost eliminate din magazin"
+    }
+  },
+  "propertyLabels": {
+    "domain": "Etichete de proprietăți",
+    "title": "Etichete de proprietăți",
+    "subtitle": "Gestionează etichetele personalizate ale proprietăților din tabelele configurabile.",
+    "fields": {
+      "module": "Modul",
+      "model": "Model",
+      "propertyCount": "Număr de proprietăți",
+      "hasOverrides": "Are personalizări"
+    }
+  },
+  "labels": {
+    "beaware": "Atenție",
+    "loading": "Se încarcă",
+    "selectValue": "Selectează valoarea",
+    "selectValues": "Selectează valorile"
+  },
+  "auth": {
+    "login": {
+      "noProviders": "Înregistrează un furnizor de autentificare în configurația Medusa pentru a permite conectarea",
+      "authenticationFailed": "Autentificarea a eșuat",
+      "cloud": "Conectează-te cu Medusa Cloud",
+      "continueWithProvider": "Continuă cu {{provider}}",
+      "or": "sau",
+      "provisioningFailed": "Nu am putut finaliza conectarea. Contactează un administrator."
+    }
+  },
+  "statuses": {
+    "draft": "Ciornă"
+  }
+}

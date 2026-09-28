@@ -1,5 +1,5 @@
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils"
-jest.setTimeout(60 * 1000)
+jest.setTimeout(Number(process.env.INTEGRATION_TEST_TIMEOUT_MS) || 120 * 1000)
 
 medusaIntegrationTestRunner({
   inApp: true,

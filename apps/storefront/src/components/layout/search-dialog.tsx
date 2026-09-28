@@ -4,7 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowRight, Search, X } from "lucide-react"
 import type { ProductCardData } from "@/lib/catalog"
 import { Price } from "../ui/price"
@@ -15,29 +15,27 @@ const SUGGESTIONS = ["tricou", "hanorac", "pantaloni", "negru", "oversized"]
 export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const router = useRouter()
   const [q, setQ] = useState("")
-  const [results, setResults] = useState<ProductCardData[]>([])
-  const [loading, setLoading] = useState(false)
+  const [response, setResponse] = useState<{ term: string; products: ProductCardData[]; error?: boolean } | null>(null)
+  const term = q.trim()
+  const current = response?.term === term ? response : null
+  const results = current?.products ?? []
+  const loading = open && term.length >= 2 && !current
   const [active, setActive] = useState(-1)
-  const abort = useRef<AbortController | null>(null)
-
   useEffect(() => {
-    if (!open) return
-    const term = q.trim()
-    if (term.length < 2) return
-    const t = setTimeout(async () => {
-      abort.current?.abort()
-      abort.current = new AbortController()
-      setLoading(true)
+    if (!open || term.length < 2) return
+    const controller = new AbortController()
+    const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(term)}`, { signal: abort.current.signal })
+        const res = await fetch(`/api/search?q=${encodeURIComponent(term)}`, { signal: controller.signal })
+        if (!res.ok) throw new Error("Search unavailable")
         const data = await res.json()
-        setResults(data.products ?? [])
-        setActive(-1)
-      } catch {}
-      setLoading(false)
+        if (!controller.signal.aborted) setResponse({ term, products: data.products ?? [] })
+      } catch {
+        if (!controller.signal.aborted) setResponse({ term, products: [], error: true })
+      }
     }, 180)
-    return () => clearTimeout(t)
-  }, [q, open])
+    return () => { clearTimeout(timer); controller.abort() }
+  }, [term, open])
 
   const submit = (term = q) => {
     if (!term.trim()) return
@@ -68,7 +66,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
             <input
               autoFocus
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => { setQ(e.target.value); setActive(-1) }}
               onKeyDown={(e) => {
                 if (e.key === "ArrowDown") {
                   e.preventDefault()
@@ -80,9 +78,12 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
               }}
               placeholder="Caută tricouri, hanorace, culori…"
               aria-label="Termen de căutare"
-              aria-controls="search-results"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={results.length > 0}
+              aria-controls={results.length ? "search-results" : undefined}
               aria-activedescendant={active >= 0 ? `sr-${active}` : undefined}
-              className="h-16 flex-1 bg-transparent text-lg outline-none placeholder:text-subtle"
+              className="h-16 min-w-0 flex-1 bg-transparent text-lg outline-none placeholder:text-subtle"
             />
             {loading && <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink border-r-transparent" aria-hidden />}
             <Dialog.Close className="grid h-9 w-9 place-items-center rounded-full hover:bg-ink/[0.06]" aria-label="Închide căutarea">
@@ -102,7 +103,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 </div>
               </div>
             ) : results.length ? (
-              <ul id="search-results" role="listbox" aria-label="Rezultate" className="flex flex-col">
+              <><ul id="search-results" role="listbox" aria-label="Rezultate" className="flex flex-col">
                 {results.slice(0, 6).map((p, i) => (
                   <li key={p.id} id={`sr-${i}`} role="option" aria-selected={i === active}>
                     <Link
@@ -121,15 +122,14 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                     </Link>
                   </li>
                 ))}
-                <li>
+              </ul>
                   <button type="button" onClick={() => submit()} className="mt-1 flex w-full items-center justify-between rounded-md px-3 py-3 text-sm font-medium hover:bg-paper">
                     Vezi toate rezultatele pentru „{q.trim()}”
                     <ArrowRight className="h-4 w-4" />
                   </button>
-                </li>
-              </ul>
+              </>
             ) : (
-              !loading && <p className="p-4 text-sm text-muted">Niciun produs pentru „{q.trim()}”. Încearcă un termen mai general.</p>
+              <p role="status" className="p-4 text-sm text-muted">{loading ? "Căutăm piesele potrivite…" : current?.error ? "Căutarea nu este disponibilă momentan. Încearcă din nou." : `Niciun produs pentru „${term}”. Încearcă un termen mai general.`}</p>
             )}
           </div>
         </Dialog.Content>

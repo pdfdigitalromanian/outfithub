@@ -4,12 +4,12 @@
  * - Page navigations: network-first, fall back to cache, then /offline.
  * - Never caches: /api, /checkout, /account, /cart, /order, server actions (POST).
  */
-const VERSION = "oh-v1"
+const VERSION = "oh-v2"
 const STATIC = `${VERSION}-static`
 const PAGES = `${VERSION}-pages`
 const IMAGES = `${VERSION}-images`
 const OFFLINE_URL = "/offline"
-const PRIVATE = [/^\/api\//, /^\/checkout/, /^\/account/, /^\/cart/, /^\/order\//]
+const PRIVATE = [/^\/wishlist(?:\/|$)/,/^\/api\//, /^\/checkout/, /^\/account/, /^\/cart/, /^\/order\//]
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -19,14 +19,15 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => !k.startsWith(VERSION)).map((k) => caches.delete(k)))).then(() => self.clients.claim())
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith("oh-") && !k.startsWith(`${VERSION}-`)).map((k) => caches.delete(k)))).then(() => self.clients.claim())
   )
 })
 
 async function trim(cacheName, max) {
   const cache = await caches.open(cacheName)
   const keys = await cache.keys()
-  for (let i = 0; i < keys.length - max; i++) await cache.delete(keys[i])
+  const removable = keys.filter((key) => new URL(key.url).pathname !== OFFLINE_URL)
+  for (let i = 0; i < keys.length - max && i < removable.length; i++) await cache.delete(removable[i])
 }
 
 self.addEventListener("fetch", (event) => {
@@ -65,7 +66,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          if (res.ok && res.type === "basic") caches.open(PAGES).then((c) => c.put(req, res.clone()).then(() => trim(PAGES, 40)))
+          if (res.ok && res.type === "basic" && !res.redirected && !/private|no-store/i.test(res.headers.get("Cache-Control") || "")) caches.open(PAGES).then((c) => c.put(req, res.clone()).then(() => trim(PAGES, 40)))
           return res
         })
         .catch(async () => (await caches.match(req)) || (await caches.match(OFFLINE_URL)))

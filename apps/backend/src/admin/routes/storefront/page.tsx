@@ -20,15 +20,56 @@ import { useEffect, useState } from "react"
 import { api } from "../../lib/sdk"
 
 const GROUPS: Array<{ key: string; label: string; help: string }> = [
-  { key: "homepage", label: "Homepage", help: "Hero, editorial block, featured collections (collection handles) and USP strip." },
-  { key: "company", label: "Company & legal", help: "Legal entity data. Used in the footer and filled into the legal pages ({{company.*}})." },
-  { key: "social", label: "Social links", help: "Full profile URLs. Empty links are hidden." },
-  { key: "seo", label: "SEO defaults", help: "Site name, title template (%s = page title) and templates used by automatic product SEO ({title}, {collection}, {excerpt})." },
-  { key: "announcement", label: "Announcement bar", help: "Top-of-page message." },
-  { key: "shipping", label: "Shipping & returns", help: "Values shown in the cart and the shipping/returns pages. Actual shipping prices are set in Settings → Locations & Shipping." },
+  { key: "homepage", label: "Pagina principală", help: "Secțiunea principală, blocul editorial, colecțiile recomandate (identificatori URL) și beneficiile magazinului." },
+  { key: "company", label: "Firmă și date legale", help: "Datele firmei, utilizate în subsol și în paginile legale ({{company.*}})." },
+  { key: "social", label: "Rețele sociale", help: "Adresele complete ale profilurilor. Linkurile necompletate sunt ascunse." },
+  { key: "seo", label: "Setări SEO implicite", help: "Numele magazinului, șablonul titlului (%s = titlul paginii) și șabloanele SEO pentru produse ({title}, {collection}, {excerpt})." },
+  { key: "announcement", label: "Bară de anunțuri", help: "Mesajul afișat în partea de sus a paginii." },
+  { key: "shipping", label: "Livrare și retururi", help: "Valorile afișate în coș și pe paginile de livrare și retururi. Tarifele se configurează în Setări → Locații și livrare." },
 ]
 
-const humanize = (k: string) => k.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())
+const FIELD_LABELS: Record<string, string> = {
+  "hero": "Secțiunea principală",
+  "eyebrow": "Supratitlu",
+  "title": "Titlu",
+  "subtitle": "Subtitlu",
+  "cta_label": "Textul butonului principal",
+  "cta_href": "Linkul butonului principal",
+  "secondary_label": "Textul butonului secundar",
+  "secondary_href": "Linkul butonului secundar",
+  "image_url": "URL imagine",
+  "image_alt": "Descriere alternativă imagine",
+  "featured_collections": "Colecții recomandate",
+  "featured_title": "Titlul secțiunii recomandate",
+  "editorial": "Secțiune editorială",
+  "body": "Conținut",
+  "usps": "Beneficii",
+  "trade_name": "Denumire comercială",
+  "legal_name": "Denumire firmă",
+  "cui": "CUI",
+  "reg_com": "Număr Registrul Comerțului",
+  "address": "Adresă",
+  "email": "E-mail",
+  "phone": "Telefon",
+  "support_hours": "Program de asistență",
+  "site_name": "Numele magazinului",
+  "title_template": "Șablon de titlu",
+  "default_title": "Titlu implicit",
+  "default_description": "Descriere implicită",
+  "default_og_image": "Imagine socială implicită",
+  "twitter_handle": "Identificator X / Twitter",
+  "product_title_template": "Șablon titlu produs",
+  "product_description_template": "Șablon descriere produs",
+  "enabled": "Activat",
+  "text": "Text",
+  "href": "Link",
+  "free_shipping_threshold": "Prag pentru livrare gratuită",
+  "currency_code": "Cod monedă",
+  "delivery_estimate": "Termen estimat de livrare",
+  "returns_days": "Termen de retur (zile)"
+}
+
+const humanize = (k: string) => FIELD_LABELS[k] ?? k.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())
 
 const StorefrontPage = () => {
   const { data } = useQuery({
@@ -36,20 +77,20 @@ const StorefrontPage = () => {
     queryFn: () => api<{ content: Record<string, any> }>("/admin/content"),
   })
   return (
-    <div className="flex flex-col gap-y-3">
+    <div className="oh-admin flex flex-col gap-y-3">
       <Container className="px-6 py-4">
-        <Heading level="h1">Storefront</Heading>
+        <Heading level="h1">Magazin online</Heading>
         <Text size="small" className="text-ui-fg-subtle mt-1">
-          Edit homepage content, company information, social links, SEO defaults and legal pages. Changes are live on the storefront within a minute.
+          Editează pagina principală, datele firmei, rețelele sociale, setările SEO și paginile legale. Modificările apar în magazin în aproximativ un minut.
         </Text>
       </Container>
       <Container className="p-0">
         <Tabs defaultValue="homepage">
-          <Tabs.List className="px-6 pt-4 flex-wrap">
+          <Tabs.List className="oh-tabs px-4 pt-4 sm:px-6">
             {GROUPS.map((g) => (
               <Tabs.Trigger key={g.key} value={g.key}>{g.label}</Tabs.Trigger>
             ))}
-            <Tabs.Trigger value="pages">Pages & legal</Tabs.Trigger>
+            <Tabs.Trigger value="pages">Pagini și informații legale</Tabs.Trigger>
           </Tabs.List>
           {GROUPS.map((g) => (
             <Tabs.Content key={g.key} value={g.key} className="px-6 py-4">
@@ -73,7 +114,7 @@ const GroupEditor = ({ group, value }: { group: string; value: Record<string, an
   const save = useMutation({
     mutationFn: () => api(`/admin/content/values/${group}`, { method: "POST", body: draft }),
     onSuccess: () => {
-      toast.success("Saved")
+      toast.success("Salvat")
       qc.invalidateQueries({ queryKey: ["storefront-content"] })
     },
     onError: (e: Error) => toast.error(e.message),
@@ -82,7 +123,7 @@ const GroupEditor = ({ group, value }: { group: string; value: Record<string, an
     <div className="flex flex-col gap-y-4">
       <ValueEditor value={draft} onChange={setDraft} path={group} />
       <div className="flex justify-end">
-        <Button isLoading={save.isPending} onClick={() => save.mutate()}>Save</Button>
+        <Button isLoading={save.isPending} onClick={() => save.mutate()}>Salvează</Button>
       </div>
     </div>
   )
@@ -95,8 +136,9 @@ const ValueEditor = ({ value, onChange, path }: { value: any; onChange: (v: any)
     if (isStrings) {
       return (
         <Input
+          id={path}
           value={value.join(", ")}
-          placeholder="comma separated"
+          placeholder="separate prin virgulă"
           onChange={(e) => onChange(e.target.value.split(",").map((s) => s.trim()).filter(Boolean))}
         />
       )
@@ -107,7 +149,7 @@ const ValueEditor = ({ value, onChange, path }: { value: any; onChange: (v: any)
           <div key={i} className="rounded-lg border p-3">
             <div className="mb-2 flex items-center justify-between">
               <Text size="xsmall" weight="plus">#{i + 1}</Text>
-              <Button size="small" variant="transparent" onClick={() => onChange(value.filter((_, j) => j !== i))}>Remove</Button>
+              <Button size="small" variant="transparent" onClick={() => onChange(value.filter((_, j) => j !== i))}>Elimină</Button>
             </div>
             <ValueEditor value={item} path={`${path}.${i}`} onChange={(v) => onChange(value.map((x, j) => (j === i ? v : x)))} />
           </div>
@@ -118,7 +160,7 @@ const ValueEditor = ({ value, onChange, path }: { value: any; onChange: (v: any)
             variant="secondary"
             onClick={() => onChange([...value, Object.fromEntries(Object.keys(value[0] ?? { title: "", body: "" }).map((k) => [k, ""]))])}
           >
-            Add item
+            Adaugă element
           </Button>
         </div>
       </div>
@@ -181,7 +223,7 @@ const PagesEditor = () => {
       })
     },
     onSuccess: () => {
-      toast.success("Page saved")
+      toast.success("Pagina a fost salvată")
       setEditing(null)
       qc.invalidateQueries({ queryKey: ["content-pages"] })
     },
@@ -194,22 +236,22 @@ const PagesEditor = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between px-6 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-y-3 px-6 pb-4">
         <Text size="small" className="text-ui-fg-subtle">
-          Markdown pages served at /pages/&lt;handle&gt;. Tokens such as {"{{company.legal_name}}"} are filled from Company & legal.
-          Have legal texts reviewed by a lawyer.
+          Pagini Markdown disponibile la /pages/&lt;identificator&gt;. Variabilele precum {"{{company.legal_name}}"} folosesc datele din Firmă și date legale. Verifică textele legale cu un specialist.
         </Text>
         <Button size="small" variant="secondary" onClick={() => setEditing({ handle: "", title: "", body: "", published: true })}>
-          New page
+          Pagină nouă
         </Button>
       </div>
-      <Table>
+      <div className="oh-table-scroll" role="region" aria-label="Tabel cu derulare orizontală" tabIndex={0}>
+        <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Title</Table.HeaderCell>
+            <Table.HeaderCell>Titlu</Table.HeaderCell>
             <Table.HeaderCell>URL</Table.HeaderCell>
-            <Table.HeaderCell>Type</Table.HeaderCell>
-            <Table.HeaderCell>Status</Table.HeaderCell>
+            <Table.HeaderCell>Tip</Table.HeaderCell>
+            <Table.HeaderCell>Stare</Table.HeaderCell>
             <Table.HeaderCell />
           </Table.Row>
         </Table.Header>
@@ -218,66 +260,67 @@ const PagesEditor = () => {
             <Table.Row key={p.id}>
               <Table.Cell>{p.title}</Table.Cell>
               <Table.Cell><code>/pages/{p.handle}</code></Table.Cell>
-              <Table.Cell>{p.is_legal ? "Legal" : "Content"}</Table.Cell>
-              <Table.Cell>{p.published ? "Published" : "Draft"}</Table.Cell>
+              <Table.Cell>{p.is_legal ? "Legală" : "Conținut"}</Table.Cell>
+              <Table.Cell>{p.published ? "Publicat" : "Ciornă"}</Table.Cell>
               <Table.Cell className="text-right">
-                <Button size="small" variant="transparent" onClick={() => setEditing(p)}>Edit</Button>
+                <Button size="small" variant="transparent" onClick={() => setEditing(p)}>Editează</Button>
                 <Button
                   size="small"
                   variant="transparent"
                   onClick={async () => {
-                    if (await prompt({ title: "Delete page?", description: `“${p.title}” will be removed from the storefront.` }))
+                    if (await prompt({ title: "Ștergi pagina?", description: `„${p.title}” va fi eliminată din magazin.` }))
                       remove.mutate(p.id!)
                   }}
                 >
-                  Delete
+                  Șterge
                 </Button>
               </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
+        </div>
       {editing && (
         <Drawer open onOpenChange={(o) => !o && setEditing(null)}>
-          <Drawer.Content className="max-w-3xl">
-            <Drawer.Header><Drawer.Title>{editing.id ? "Edit page" : "New page"}</Drawer.Title></Drawer.Header>
+          <Drawer.Content className="oh-admin-drawer max-w-3xl">
+            <Drawer.Header><Drawer.Title>{editing.id ? "Editează pagina" : "Pagină nouă"}</Drawer.Title></Drawer.Header>
             <Drawer.Body className="flex flex-col gap-y-3 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="flex flex-col gap-y-1">
-                  <Label size="small">Title</Label>
+                  <Label size="small">Titlu</Label>
                   <Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} />
                 </div>
                 <div className="flex flex-col gap-y-1">
-                  <Label size="small">Handle</Label>
+                  <Label size="small">Identificator URL</Label>
                   <Input value={editing.handle} onChange={(e) => setEditing({ ...editing, handle: e.target.value })} />
                 </div>
               </div>
               <div className="flex flex-col gap-y-1">
-                <Label size="small">Content (Markdown)</Label>
+                <Label size="small">Conținut (Markdown)</Label>
                 <Textarea rows={20} className="font-mono text-xs" value={editing.body} onChange={(e) => setEditing({ ...editing, body: e.target.value })} />
               </div>
               <div className="flex flex-col gap-y-1">
-                <Label size="small">SEO title (optional)</Label>
+                <Label size="small">Titlu SEO (opțional)</Label>
                 <Input value={editing.seo_title ?? ""} onChange={(e) => setEditing({ ...editing, seo_title: e.target.value })} />
               </div>
               <div className="flex flex-col gap-y-1">
-                <Label size="small">SEO description (optional)</Label>
+                <Label size="small">Descriere SEO (opțional)</Label>
                 <Textarea rows={2} value={editing.seo_description ?? ""} onChange={(e) => setEditing({ ...editing, seo_description: e.target.value })} />
               </div>
-              <div className="flex gap-6">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap items-center gap-2">
                   <Switch checked={!!editing.published} onCheckedChange={(c) => setEditing({ ...editing, published: c })} />
-                  <Label size="small">Published</Label>
+                  <Label size="small">Publicat</Label>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Switch checked={!!editing.is_legal} onCheckedChange={(c) => setEditing({ ...editing, is_legal: c })} />
-                  <Label size="small">Legal page (footer)</Label>
+                  <Label size="small">Pagină legală (subsol)</Label>
                 </div>
               </div>
             </Drawer.Body>
             <Drawer.Footer>
-              <Button variant="secondary" onClick={() => setEditing(null)}>Cancel</Button>
-              <Button isLoading={save.isPending} onClick={() => save.mutate(editing)}>Save</Button>
+              <Button variant="secondary" onClick={() => setEditing(null)}>Anulează</Button>
+              <Button isLoading={save.isPending} onClick={() => save.mutate(editing)}>Salvează</Button>
             </Drawer.Footer>
           </Drawer.Content>
         </Drawer>
@@ -287,7 +330,7 @@ const PagesEditor = () => {
 }
 
 export const config = defineRouteConfig({
-  label: "Storefront",
+  label: "Magazin online",
   icon: BuildingStorefront,
   rank: 2,
 })

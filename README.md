@@ -6,7 +6,7 @@ automated SEO and an installable PWA.
 
 ```
 apps/
-  backend/      Medusa v2 server + admin extensions (Node 22, Postgres, Redis)
+  backend/      Medusa v2 server + admin extensions (Node 24, Postgres, Redis)
   storefront/   Next.js 16 App Router storefront (deploys to Vercel)
 docs/
   ARCHITECTURE.md   architecture & design decisions
@@ -18,13 +18,12 @@ IMPLEMENTATION_STATUS.md   what is done / needs credentials / needs provider app
 
 ```bash
 docker compose up -d                       # Postgres 16 + Redis 7
-npm run install:all
+npm install
 cp apps/backend/.env.example apps/backend/.env          # fill the 3 secrets (openssl rand -hex 32)
 npm run setup:db                           # migrations + Romanian demo store; prints the publishable key
-(cd apps/backend && npx medusa user -e admin@example.com -p <password>)
+(cd apps/backend && npx medusa user -e admin@example.com -p 'replace-with-a-strong-password')
 cp apps/storefront/.env.example apps/storefront/.env.local   # paste the publishable key
-npm run dev:backend      # http://localhost:9000/app  (admin)
-npm run dev:storefront   # http://localhost:3000
+npm run dev             # starts backend + storefront; prints URLs
 ```
 
 All variables are documented in [`.env.example`](.env.example). Integration credentials are **not**
@@ -37,7 +36,7 @@ environment variables: they are entered in **Admin → Integrations** and stored
 - Catalog: `/shop`, `/collections/[handle]`, `/categories/[handle]`, `/search` with filters (category, collection, size in stock, color, price range, in stock, on sale), sorting, “load more” pagination, instant search dialog (`/` or ⌘K).
 - Product page: responsive gallery (swipe on mobile, lightbox), color/size picker with availability, `?variant=` deep links, sticky mobile buy bar, size guide, accordions, related + recently viewed, JSON-LD `ProductGroup`/`Offer` + breadcrumbs.
 - Cart drawer + cart page (quantity, promo codes, free-shipping progress).
-- Checkout: contact/address (Romanian counties, phone validation), Sameday home / **Easybox with searchable locker picker (text or geolocation)** / pickup, cash on delivery or Stripe Payment Element, terms consent, order confirmation.
+- Checkout: guest ordering without registration (optional sign-in for saved addresses), contact/address (Romanian counties, phone validation), Sameday home / **Easybox with searchable locker picker (text or geolocation)** / pickup, cash on delivery or Stripe Payment Element, terms consent, order confirmation.
 - Customer accounts: register, login, password reset, profile, address book, order history + detail with AWB tracking link, wishlist (guest in localStorage, synced to the account after login).
 - Legal & content pages from the admin (Terms, Privacy, Cookies, Delivery, Returns + withdrawal form, ANPC/SAL, About, Contact) with company-data tokens; ANPC SAL badge in the footer.
 - SEO: per-page metadata, canonical URLs, Open Graph/Twitter, generated OG image, sitemap with image entries, robots (auto-noindex for previews), noindex for filtered listings.
@@ -58,7 +57,7 @@ environment variables: they are entered in **Admin → Integrations** and stored
 - Emails: order confirmation and password reset through the Notification module (SendGrid or log).
 - Admin extensions: **Storefront** (content + legal pages editor), **Integrations**, **Channel sync**, SEO panels on products/collections/categories, sales-channel status on products, Sameday panel on orders.
 
-### CONFIGURATION REQUIRED (works once you enter credentials)
+### CONFIGURATION REQUIRED (live validation pending)
 Supabase Postgres/Storage, Redis, SendGrid, Stripe, GA4, Meta, TikTok Pixel/Events, Google Merchant, Sameday. See [SETUP.md](SETUP.md).
 
 ### EXTERNAL APPROVAL REQUIRED
@@ -69,12 +68,17 @@ Stripe card payments, GTM, Google Ads tag, SendGrid templates, separate worker i
 
 ## Commands
 
+`npm install` at the root installs both apps. `npm run dev` starts both servers,
+reads the backend port from its local configuration, and reuses occupied ports
+without terminating existing processes. Confirm any reused server is OutfitHub.
+
 | Command | What it does |
 | --- | --- |
 | `npm run typecheck` | TypeScript for backend, admin and storefront |
 | `npm run lint` | ESLint (storefront) |
 | `npm test` | Backend unit tests (Jest) + storefront unit tests (Vitest) |
 | `npm run test:integration` | Backend HTTP integration tests (needs Postgres) |
+| `npm run test:admin` | Romanian admin and responsive browser checks (needs local admin credentials; see [docs/ADMIN.md](docs/ADMIN.md)) |
 | `npm run test:e2e` | Playwright E2E + axe accessibility (needs both apps running + seeded DB) |
 | `npm run build` | Production builds of both apps |
 
@@ -85,6 +89,18 @@ Stripe card payments, GTM, Google Ads tag, SendGrid templates, separate worker i
 
 Detailed steps: [SETUP.md](SETUP.md). Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Gap-closing review (28 September 2026)
+
+The review added account abuse protection backed by Redis, strict return-path and
+checkout input validation, payment redirect completion, terms/consent recording,
+canonical Easybox validation, search/locker request cancellation, accessible
+product-card focus, provider response-body deadlines, and truthful asynchronous
+Meta batch status. It also restored the missing storefront environment example and
+made typechecking work after a fresh install with `next typegen`.
+
+Use Node 24 (`nvm use`). New boundary tests cover these changes. Fresh verification
+results and remaining constraints are recorded in [docs/REVIEW.md](docs/REVIEW.md).
+
 ## Known limitations
 
 - Catalog filtering runs in the storefront over the cached catalog: great up to a few thousand products; beyond that add a search engine (Meilisearch/Algolia) behind `/api/search` and the listing pages.
@@ -92,3 +108,5 @@ Detailed steps: [SETUP.md](SETUP.md). Architecture: [docs/ARCHITECTURE.md](docs/
 - Integrations were verified against provider error responses (Google token endpoint) and a local Sameday API mock replicating the official SDK formats; they have **not** been exercised with real merchant accounts.
 - Legal texts are templates aligned with Romanian law and must be reviewed by a lawyer.
 - 21st.dev was unreachable from the build environment; equivalent components were built on Radix and the local design tokens.
+
+Medusa administration now defaults to Romanian, with translated OutfitHub extensions and responsive layouts. Details and verification: [docs/ADMIN.md](docs/ADMIN.md).

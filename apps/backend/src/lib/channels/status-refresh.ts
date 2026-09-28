@@ -58,7 +58,7 @@ export async function refreshChannelStatuses(container: MedusaContainer, limit =
       catalog_id: String(meta.config.catalog_id),
       graph_version: meta.config.graph_version as string,
     })
-    const rows = await svc.listChannelSyncs({ provider: "meta", status: "synced" }, { take: limit })
+    const rows = await svc.listChannelSyncs({ provider: "meta", status: ["processing", "synced"] }, { take: limit })
     for (const row of rows) {
       const ext = (row.external_data as any) ?? {}
       const handles: string[] = ext.batch_handles ?? []
@@ -68,6 +68,7 @@ export async function refreshChannelStatuses(container: MedusaContainer, limit =
       for (const h of handles) {
         try {
           const res = await client.checkBatch(h)
+          if (!res.data?.length) finished = false
           for (const d of res.data ?? []) {
             if (d.status !== "finished") finished = false
             for (const err of d.errors ?? []) errors.push(err.message)
@@ -81,7 +82,9 @@ export async function refreshChannelStatuses(container: MedusaContainer, limit =
       await svc.updateChannelSyncs({
         id: row.id,
         external_data: { ...ext, batch_checked: true },
-        ...(errors.length ? { status: "error" as const, last_error: `Meta catalog: ${errors.slice(0, 3).join("; ")}` } : {}),
+        status: errors.length ? "error" : row.action === "delete" ? "removed" : "synced",
+        last_error: errors.length ? `Meta catalog: ${errors.slice(0, 3).join("; ")}` : null,
+        last_synced_at: new Date(),
       })
       checked++
     }

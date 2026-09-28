@@ -1,3 +1,4 @@
+import { redactSecrets } from "../integrations/redact"
 import { FetchLike, ProviderError, kindFromStatus } from "./http"
 
 /**
@@ -163,7 +164,7 @@ export class SamedayClient {
     }
     let res: Response
     try {
-      res = await this.fetchImpl(url.toString(), { method, headers, body })
+      res = await this.fetchImpl(url.toString(), { method, headers, body, signal: AbortSignal.timeout(20_000) })
     } catch (e) {
       throw new ProviderError("sameday", "network", `Sameday network error: ${(e as Error).message}`)
     }
@@ -187,7 +188,7 @@ export class SamedayClient {
         json?.message ||
         (json?.errors ? JSON.stringify(json.errors).slice(0, 500) : null) ||
         `Sameday HTTP ${res.status}`
-      throw new ProviderError("sameday", kindFromStatus(res.status), msg, res.status, json)
+      throw new ProviderError("sameday", kindFromStatus(res.status), redactSecrets(String(msg), { ...this.creds, token: this.token?.token }), res.status, json)
     }
     return json
   }
@@ -261,6 +262,8 @@ export class SamedayClient {
         thirdPartyPickup: 0,
         awbRecipient: input.awbRecipient,
         parcels: input.parcels,
+        lockerLastMile: input.lockerLastMile,
+        currency: input.currency,
       },
     })
   }

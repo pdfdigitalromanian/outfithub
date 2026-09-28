@@ -88,13 +88,15 @@ export class MetaClient {
   }
 
   /** Upserts/deletes catalog items. Returns batch handles for status polling. */
-  itemsBatch(requests: Array<{ method: "UPDATE" | "DELETE" | "CREATE"; data: Partial<MetaCatalogItem> & { id: string } }>) {
+  async itemsBatch(requests: Array<{ method: "UPDATE" | "DELETE" | "CREATE"; data: Partial<MetaCatalogItem> & { id: string } }>) {
     if (!this.cfg.catalog_id) throw new ProviderError("meta", "not_configured", "Catalog ID is not configured")
-    return this.call<{ handles: string[] }>("POST", `${this.cfg.catalog_id}/items_batch`, {
+    const result = await this.call<{ handles: string[] }>("POST", `${this.cfg.catalog_id}/items_batch`, {
       item_type: "PRODUCT_ITEM",
       allow_upsert: true,
       requests,
     })
+    if (!result.handles?.length) throw new ProviderError("meta", "server", "Meta did not return a catalog batch handle")
+    return result
   }
 
   checkBatch(handle: string) {

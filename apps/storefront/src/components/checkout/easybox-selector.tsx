@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, Clock, LocateFixed, MapPin, Search } from "lucide-react"
 import { Modal } from "../ui/sheet"
 import { Button } from "../ui/button"
@@ -39,38 +39,35 @@ export function EasyboxSelector({
 }) {
   const [q, setQ] = useState(initialCity ?? "")
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
-  const [lockers, setLockers] = useState<Locker[]>([])
-  const [loading, setLoading] = useState(false)
   const [geoError, setGeoError] = useState<string | null>(null)
-  const [unavailable, setUnavailable] = useState(false)
-  const controller = useRef<AbortController | null>(null)
+  const requestKey = `${q.trim()}|${coords?.lat ?? ""}|${coords?.lng ?? ""}`
+  const [result, setResult] = useState<{ key: string; lockers: Locker[]; unavailable: boolean } | null>(null)
+  const current = result?.key === requestKey ? result : null
+  const lockers = current?.lockers ?? []
+  const loading = open && (!!q.trim() || !!coords) && !current
+  const unavailable = current?.unavailable ?? false
 
   useEffect(() => {
-    if (!open) return
+    if (!open || (!q.trim() && !coords)) return
+    const controller = new AbortController()
     const t = setTimeout(async () => {
-      controller.current?.abort()
-      controller.current = new AbortController()
       const params = new URLSearchParams({ limit: "40" })
       if (q.trim()) params.set("q", q.trim())
       if (coords) {
         params.set("lat", String(coords.lat))
         params.set("lng", String(coords.lng))
       }
-      if (!q.trim() && !coords) {
-        setLockers([])
-        return
-      }
-      setLoading(true)
       try {
-        const res = await fetch(`/api/lockers?${params}`, { signal: controller.current.signal })
+        const res = await fetch(`/api/lockers?${params}`, { signal: controller.signal })
+        if (!res.ok) throw new Error("Locker search unavailable")
         const data = await res.json()
-        setUnavailable(data.available === false)
-        setLockers(data.lockers ?? [])
-      } catch {}
-      setLoading(false)
+        if (!controller.signal.aborted) setResult({ key: requestKey, lockers: data.lockers ?? [], unavailable: data.available === false })
+      } catch {
+        if (!controller.signal.aborted) setResult({ key: requestKey, lockers: [], unavailable: true })
+      }
     }, 220)
-    return () => clearTimeout(t)
-  }, [q, coords, open])
+    return () => { clearTimeout(t); controller.abort() }
+  }, [q, coords, open, requestKey])
 
   const locate = () => {
     setGeoError(null)

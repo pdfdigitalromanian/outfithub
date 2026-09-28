@@ -11,7 +11,7 @@ export function ProductCard({ product, priority, sizes }: { product: ProductCard
   const isNew = product.isNew
   const imgSizes = sizes ?? "(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 48vw"
   return (
-    <article className="group relative flex flex-col">
+    <article className="group relative flex flex-col rounded-lg has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-4 has-[:focus-visible]:outline-ink">
       <Link href={`/products/${product.handle}`} tabIndex={-1} aria-hidden className="product-frame relative block aspect-[4/5] overflow-hidden rounded-lg">
         {product.thumbnail ? (
           <Image
