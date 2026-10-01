@@ -24,8 +24,14 @@ export const TEMPLATES = {
   orderPlaced: () => process.env.SENDGRID_TEMPLATE_ORDER_PLACED || "order-placed",
   passwordReset: () => process.env.SENDGRID_TEMPLATE_PASSWORD_RESET || "password-reset",
   shipmentCreated: () => process.env.SENDGRID_TEMPLATE_SHIPMENT || "shipment-created",
+  userInvite: () => process.env.SENDGRID_TEMPLATE_USER_INVITE || "user-invite",
 }
 
 export function storefrontUrl() {
   return (process.env.STOREFRONT_URL || "http://localhost:3000").replace(/\/$/, "")
+}
+
+/** Medusa Admin base URL (served by the backend under /app). */
+export function adminUrl() {
+  return `${(process.env.MEDUSA_BACKEND_URL || "http://localhost:9000").replace(/\/$/, "")}/app`
 }

@@ -99,7 +99,7 @@ Any Node host works (Railway, Render, Fly.io, a VPS with Docker). `apps/backend/
 
 ## 10. E-mail
 
-- [ ] **(recommended)** SendGrid: create API key (Settings → API Keys), verify sender domain, create dynamic templates for *order placed*, *password reset*, *shipment*. Backend env `SENDGRID_API_KEY`, `SENDGRID_FROM`, `SENDGRID_TEMPLATE_*`. Without it, e-mails are only logged.
+- [ ] **(recommended)** SendGrid: create API key (Settings → API Keys), verify sender domain, create dynamic templates for *order placed*, *password reset*, *shipment*, *admin invite* (uses `{{url}}`). Backend env `SENDGRID_API_KEY`, `SENDGRID_FROM`, `SENDGRID_TEMPLATE_*`. Without it, e-mails are only logged.
 
 ## 11. Google
 
