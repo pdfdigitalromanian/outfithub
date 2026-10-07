@@ -8,6 +8,9 @@ for (const url of [process.env.MEDUSA_BACKEND_URL, process.env.NEXT_PUBLIC_IMAGE
   } catch {}
 }
 
+// Medusa reserves /admin for its API, so the dashboard stays on the backend (/app); /admin here only redirects to it.
+const adminUrl = (process.env.ADMIN_URL || (process.env.MEDUSA_BACKEND_URL ? `${process.env.MEDUSA_BACKEND_URL.replace(/\/$/, "")}/app` : "")).replace(/\/$/, "")
+
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -20,6 +23,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Self-contained server for the Docker image (apps/storefront/Dockerfile); ignored by Vercel.
+  output: "standalone",
+  outputFileTracingRoot: __dirname,
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [60, 75, 85],
@@ -47,6 +53,12 @@ const nextConfig: NextConfig = {
     return [
       { source: "/store", destination: "/shop", permanent: true },
       { source: "/collections/all", destination: "/shop", permanent: true },
+      ...(adminUrl
+        ? [
+            { source: "/admin", destination: adminUrl, permanent: false },
+            { source: "/admin/:path*", destination: `${adminUrl}/:path*`, permanent: false },
+          ]
+        : []),
     ]
   },
 }
